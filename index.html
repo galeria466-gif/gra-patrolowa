@@ -237,9 +237,9 @@ async function showMap() {
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap contributors"
     }).addTo(map);
-    const { data: stations, error } = await supabaseClient
-  .from("stations")
-  .select("id, name, color, latitude, longitude, activation_radius, type");
+   const { data: stations, error } = await supabaseClient.rpc(
+  "get_stations"
+);
 
 if (error) {
   console.error("Błąd pobierania punktów:", error);
