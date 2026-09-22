@@ -83,24 +83,61 @@
     <p id="welcome"></p>
   </div>
 
-  <script>
-    function startGame() {
-      const patrolName = document.getElementById("patrolName").value;
-      const members = document.getElementById("members").value;
-      const emergencyPhone = document.getElementById("emergencyPhone").value;
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-      if (!patrolName || !members || !emergencyPhone) {
-        alert("Uzupełnij wszystkie pola.");
-        return;
-      }
+<script>
+  const SUPABASE_URL = "https://ozotiydwyrmrepetvpbh.supabase.co";
 
-      document.getElementById("startScreen").classList.add("hidden");
-      document.getElementById("gameScreen").classList.remove("hidden");
+  const SUPABASE_KEY = "ozotiydwyrmrepetvpbh";
 
-      document.getElementById("welcome").textContent =
-        "Witaj, patrolu " + patrolName + "! Przygotujcie się do gry.";
+  const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+  async function startGame() {
+    const patrolName = document.getElementById("patrolName").value.trim();
+    const members = document.getElementById("members").value.trim();
+    const emergencyPhone = document.getElementById("emergencyPhone").value.trim();
+
+    if (!patrolName || !members || !emergencyPhone) {
+      alert("Uzupełnij wszystkie pola.");
+      return;
     }
-  </script>
+
+    const button = document.querySelector("button");
+    button.disabled = true;
+    button.textContent = "ZAPISYWANIE...";
+
+    const { data, error } = await supabaseClient.rpc(
+      "register_patrol",
+      {
+        p_name: patrolName,
+        p_members: members,
+        p_emergency_phone: emergencyPhone
+      }
+    );
+
+    if (error) {
+      console.error(error);
+      alert("Nie udało się zapisać patrolu: " + error.message);
+      button.disabled = false;
+      button.textContent = "ROZPOCZNIJ GRĘ";
+      return;
+    }
+
+    const patrol = data[0];
+
+    document.getElementById("startScreen").classList.add("hidden");
+    document.getElementById("gameScreen").classList.remove("hidden");
+
+    document.getElementById("welcome").innerHTML =
+      "Witaj, patrolu <strong>" + patrolName + "!</strong><br><br>" +
+      "🔐 Wasz kod dostępu:<br>" +
+      "<strong style='font-size: 28px;'>" + patrol.access_code + "</strong><br><br>" +
+      "Zapiszcie ten kod. Będzie potrzebny do wejścia do gry.";
+  }
+</script>
 
 </body>
 </html>
