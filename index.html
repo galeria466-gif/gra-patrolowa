@@ -83,6 +83,7 @@
     <p id="welcome"></p>
   </div>
 
+```html
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
@@ -95,6 +96,65 @@
     SUPABASE_KEY
   );
 
+  function showLogin() {
+    document.getElementById("startScreen").innerHTML = `
+      <h1>🐀 Wyścig Szczurów</h1>
+
+      <p>Masz już kod patrolu?</p>
+
+      <input
+        type="text"
+        id="accessCode"
+        placeholder="Wpisz kod patrolu"
+      >
+
+      <button onclick="loginPatrol()">WEJDŹ DO GRY</button>
+
+      <p style="text-align:center;">
+        Nie masz jeszcze patrolu?
+        <button onclick="location.reload()">UTWÓRZ NOWY PATROL</button>
+      </p>
+    `;
+  }
+
+  async function loginPatrol() {
+    const code = document
+      .getElementById("accessCode")
+      .value
+      .trim()
+      .toUpperCase();
+
+    if (!code) {
+      alert("Wpisz kod patrolu.");
+      return;
+    }
+
+    const { data, error } = await supabaseClient
+      .from("patrols")
+      .select("id, name, members, points")
+      .eq("access_code", code)
+      .single();
+
+    if (error || !data) {
+      alert("Nie znaleziono patrolu o takim kodzie.");
+      console.error(error);
+      return;
+    }
+
+    document.getElementById("startScreen").classList.add("hidden");
+    document.getElementById("gameScreen").classList.remove("hidden");
+
+    document.getElementById("welcome").innerHTML =
+      "Witaj ponownie, patrolu <strong>" +
+      data.name +
+      "!</strong><br><br>" +
+      "👥 Skład: " +
+      data.members +
+      "<br><br>" +
+      "🏆 Punkty: " +
+      data.points;
+  }
+
   async function startGame() {
     const patrolName = document.getElementById("patrolName").value.trim();
     const members = document.getElementById("members").value.trim();
@@ -105,7 +165,7 @@
       return;
     }
 
-    const button = document.querySelector("button");
+    const button = document.querySelector("#startScreen button");
     button.disabled = true;
     button.textContent = "ZAPISYWANIE...";
 
@@ -132,12 +192,17 @@
     document.getElementById("gameScreen").classList.remove("hidden");
 
     document.getElementById("welcome").innerHTML =
-      "Witaj, patrolu <strong>" + patrolName + "!</strong><br><br>" +
+      "Witaj, patrolu <strong>" +
+      patrolName +
+      "!</strong><br><br>" +
       "🔐 Wasz kod dostępu:<br>" +
-      "<strong style='font-size: 28px;'>" + patrol.access_code + "</strong><br><br>" +
+      "<strong style='font-size: 28px;'>" +
+      patrol.access_code +
+      "</strong><br><br>" +
       "Zapiszcie ten kod. Będzie potrzebny do wejścia do gry.";
   }
 </script>
+```
 
 </body>
 </html>
