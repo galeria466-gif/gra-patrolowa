@@ -229,7 +229,7 @@ showMap();
 <script>
   let map;
 
-  function showMap() {
+async function showMap() {
     if (map) return;
 
     map = L.map("map").setView([54.4550, 18.4700], 14);
@@ -237,6 +237,28 @@ showMap();
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap contributors"
     }).addTo(map);
+    const { data: stations, error } = await supabaseClient
+  .from("stations")
+  .select("id, name, color, latitude, longitude, activation_radius, type");
+
+if (error) {
+  console.error("Błąd pobierania punktów:", error);
+  return;
+}
+
+stations.forEach(station => {
+  L.circleMarker(
+    [station.latitude, station.longitude],
+    {
+      radius: 9,
+      color: station.color,
+      fillColor: station.color,
+      fillOpacity: 1
+    }
+  )
+    .addTo(map)
+    .bindTooltip(station.name);
+});
   }
 </script>
   
