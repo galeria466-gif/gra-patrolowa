@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gra Patrolowa</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .box {
+      max-width: 500px;
+      margin: 30px auto;
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    input, textarea, button {
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 10px;
+      margin-bottom: 15px;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    button {
+      background: #222;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #444;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="box" id="startScreen">
+    <h1>🧭 Gra Patrolowa</h1>
+
+    <p>Wpisz dane swojego patrolu:</p>
+
+    <label>Nazwa patrolu</label>
+    <input type="text" id="patrolName" placeholder="np. Wilki">
+
+    <label>Skład patrolu</label>
+    <textarea id="members" placeholder="Wpisz imiona członków patrolu"></textarea>
+
+    <label>Numer alarmowy</label>
+    <input type="tel" id="emergencyPhone" placeholder="np. 123 456 789">
+
+    <button onclick="startGame()">ROZPOCZNIJ GRĘ</button>
+  </div>
+
+  <div class="box hidden" id="gameScreen">
+    <h1>🗺️ Gra rozpoczęta!</h1>
+    <p id="welcome"></p>
+  </div>
+
+  <script>
+    function startGame() {
+      const patrolName = document.getElementById("patrolName").value;
+      const members = document.getElementById("members").value;
+      const emergencyPhone = document.getElementById("emergencyPhone").value;
+
+      if (!patrolName || !members || !emergencyPhone) {
+        alert("Uzupełnij wszystkie pola.");
+        return;
+      }
+
+      document.getElementById("startScreen").classList.add("hidden");
+      document.getElementById("gameScreen").classList.remove("hidden");
+
+      document.getElementById("welcome").textContent =
+        "Witaj, patrolu " + patrolName + "! Przygotujcie się do gry.";
+    }
+  </script>
+
+</body>
+</html>
