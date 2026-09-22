@@ -130,17 +130,25 @@
       return;
     }
 
-    const { data, error } = await supabaseClient
-      .from("patrols")
-      .select("id, name, members, points")
-      .eq("access_code", code)
-      .single();
+   const { data, error } = await supabaseClient.rpc(
+  "login_patrol",
+  {
+    p_access_code: code
+  }
+);
 
-    if (error || !data) {
-      alert("Nie znaleziono patrolu o takim kodzie.");
-      console.error(error);
-      return;
-    }
+if (error) {
+  console.error(error);
+  alert("Błąd logowania: " + error.message);
+  return;
+}
+
+if (!data || data.length === 0) {
+  alert("Nie znaleziono patrolu o takim kodzie.");
+  return;
+}
+
+const patrol = data[0];
 
     document.getElementById("startScreen").classList.add("hidden");
     document.getElementById("gameScreen").classList.remove("hidden");
