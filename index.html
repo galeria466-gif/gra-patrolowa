@@ -154,14 +154,14 @@ const patrol = data[0];
     document.getElementById("gameScreen").classList.remove("hidden");
 
     document.getElementById("welcome").innerHTML =
-      "Witaj ponownie, patrolu <strong>" +
-      data.name +
-      "!</strong><br><br>" +
-      "👥 Skład: " +
-      data.members +
-      "<br><br>" +
-      "🏆 Punkty: " +
-      data.points;
+  "Witaj ponownie, patrolu <strong>" +
+  patrol.name +
+  "!</strong><br><br>" +
+  "👥 Skład: " +
+  patrol.members +
+  "<br><br>" +
+  "🏆 Punkty: " +
+  patrol.points;
   }
 
   async function startGame() {
