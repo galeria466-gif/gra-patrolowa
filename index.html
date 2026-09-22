@@ -84,7 +84,6 @@
     <p id="welcome"></p>
   </div>
 
-```html
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
@@ -118,52 +117,51 @@
     `;
   }
 
-  async function loginPatrol() {
-    const code = document
-      .getElementById("accessCode")
-      .value
-      .trim()
-      .toUpperCase();
+ async function loginPatrol() {
+  const code = document
+    .getElementById("accessCode")
+    .value
+    .trim()
+    .toUpperCase();
 
-    if (!code) {
-      alert("Wpisz kod patrolu.");
-      return;
+  if (!code) {
+    alert("Wpisz kod patrolu.");
+    return;
+  }
+
+  const { data, error } = await supabaseClient.rpc(
+    "login_patrol",
+    {
+      p_access_code: code
     }
+  );
 
-   const { data, error } = await supabaseClient.rpc(
-  "login_patrol",
-  {
-    p_access_code: code
-  }
-);
-
-if (error) {
-  console.error(error);
-  alert("Błąd logowania: " + error.message);
-  return;
-}
-
-if (!data || data.length === 0) {
-  alert("Nie znaleziono patrolu o takim kodzie.");
-  return;
-}
-
-const patrol = data[0];
-
-    document.getElementById("startScreen").classList.add("hidden");
-    document.getElementById("gameScreen").classList.remove("hidden");
-
-    document.getElementById("welcome").innerHTML =
-  "Witaj ponownie, patrolu <strong>" +
-  patrol.name +
-  "!</strong><br><br>" +
-  "👥 Skład: " +
-  patrol.members +
-  "<br><br>" +
-  "🏆 Punkty: " +
-  patrol.points;
+  if (error) {
+    console.error(error);
+    alert("Błąd logowania: " + error.message);
+    return;
   }
 
+  if (!data || data.length === 0) {
+    alert("Nie znaleziono patrolu o takim kodzie.");
+    return;
+  }
+
+  const patrol = data[0];
+
+  document.getElementById("startScreen").classList.add("hidden");
+  document.getElementById("gameScreen").classList.remove("hidden");
+
+  document.getElementById("welcome").innerHTML =
+    "Witaj ponownie, patrolu <strong>" +
+    patrol.name +
+    "!</strong><br><br>" +
+    "👥 Skład: " +
+    patrol.members +
+    "<br><br>" +
+    "🏆 Punkty: " +
+    patrol.points;
+}
   async function startGame() {
     const patrolName = document.getElementById("patrolName").value.trim();
     const members = document.getElementById("members").value.trim();
