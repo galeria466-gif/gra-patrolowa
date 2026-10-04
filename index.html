@@ -201,6 +201,7 @@ showMap();
     patrol.points;
 
    startGPS();
+   startPomidorTimer();
    loadRanking();
 }
   async function startGame() {
@@ -279,6 +280,11 @@ if (error) {
 
 stations.forEach(station => {
   if (station.type === "pomidor") {
+    const position = getPomidorPosition();
+
+station.latitude = position[0];
+station.longitude = position[1];
+    
     const tomatoIcon = L.divIcon({
       className: "",
       html: '<div style="font-size: 32px;">🍅</div>',
@@ -286,12 +292,12 @@ stations.forEach(station => {
       iconAnchor: [17, 17]
     });
 
-    L.marker(
-      [station.latitude, station.longitude],
-      { icon: tomatoIcon }
-    )
-      .addTo(map)
-      .bindTooltip(station.name);
+window.pomidorMarker = L.marker(
+  [station.latitude, station.longitude],
+  { icon: tomatoIcon }
+)
+  .addTo(map)
+  .bindTooltip(station.name);
 
   } else {
     L.circleMarker(
@@ -356,6 +362,53 @@ function distanceInMeters(lat1, lon1, lat2, lon2) {
     rankingList.appendChild(row);
   });
 }
+     const pomidorPositions = [
+  [54.4705, 18.4505],
+  [54.4710, 18.4510],
+  [54.4698, 18.4498],
+  [54.4702, 18.4520],
+  [54.4712, 18.4495]
+];
+        function getPomidorPosition() {
+  const fifteenMinutes = 15 * 60 * 1000;
+  const slot = Math.floor(Date.now() / fifteenMinutes);
+
+  return pomidorPositions[slot % pomidorPositions.length];
+}
+    function updatePomidorPosition() {
+  if (!window.pomidorMarker || !window.stations) {
+    return;
+  }
+
+  const position = getPomidorPosition();
+
+  window.pomidorMarker.setLatLng(position);
+
+  window.stations.forEach(station => {
+    if (station.type === "pomidor") {
+      station.latitude = position[0];
+      station.longitude = position[1];
+    }
+  });
+}
+
+function startPomidorTimer() {
+  const fifteenMinutes = 15 * 60 * 1000;
+
+  const now = Date.now();
+  const nextSlot =
+    Math.ceil(now / fifteenMinutes) * fifteenMinutes;
+
+  setTimeout(() => {
+    updatePomidorPosition();
+
+    setInterval(
+      updatePomidorPosition,
+      fifteenMinutes
+    );
+  }, nextSlot - now);
+}
+
 function startGPS() {
   if (!navigator.geolocation) {
     alert("Ta przeglądarka nie obsługuje GPS.");
@@ -369,6 +422,15 @@ function startGPS() {
 
       console.log("GPS patrolu:", latitude, longitude);
       if (window.stations) {
+        window.stations.forEach(station => {
+  if (station.type === "pomidor") {
+    const position = getPomidorPosition();
+
+    station.latitude = position[0];
+    station.longitude = position[1];
+  }
+});
+       
   window.stations.forEach(station => {
     const distance = distanceInMeters(
       latitude,
