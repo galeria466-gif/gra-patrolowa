@@ -425,13 +425,24 @@ async function completeStation() {
     return;
   }
 
-  const { data, error } = await supabaseClient.rpc(
-    "complete_station",
-    {
-      p_patrol_id: window.patrolId,
-      p_station_id: window.currentStation.id
-    }
-  );
+ let password = null;
+
+if (window.currentStation.type === "osobowy") {
+  password = prompt("🔑 Podaj hasło otrzymane od punktowego:");
+
+  if (password === null) {
+    return;
+  }
+}
+
+const { data, error } = await supabaseClient.rpc(
+  "complete_station",
+  {
+    p_patrol_id: window.patrolId,
+    p_station_id: window.currentStation.id,
+    p_password: password
+  }
+);
 
   if (error) {
     console.error("Błąd zaliczania punktu:", error);
