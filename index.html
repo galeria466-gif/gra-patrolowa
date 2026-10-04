@@ -295,16 +295,17 @@ function startGPS() {
       const longitude = position.coords.longitude;
 
       console.log("GPS patrolu:", latitude, longitude);
-      if (!window.patrolMarker) {
-  window.patrolMarker = L.circleMarker(
+     if (!window.patrolMarker) {
+  const ratIcon = L.divIcon({
+    className: "",
+    html: '<div style="font-size: 30px; text-shadow: 0 0 0 white, 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white;">🐀</div>',
+    iconSize: [35, 35],
+    iconAnchor: [17, 17]
+  });
+
+  window.patrolMarker = L.marker(
     [latitude, longitude],
-    {
-      radius: 8,
-      color: "white",
-      fillColor: "purple",
-      fillOpacity: 1,
-      weight: 3
-    }
+    { icon: ratIcon }
   ).addTo(map);
 } else {
   window.patrolMarker.setLatLng([latitude, longitude]);
