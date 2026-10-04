@@ -98,9 +98,22 @@
   <h2>🏆 Ranking patroli</h2>
   <div id="rankingList">Ładowanie rankingu...</div>
 </div>
-    <div id="stationTask" class="hidden">
+   <div id="stationTask" class="hidden">
   <h3 id="stationTaskTitle"></h3>
+
   <p id="stationTaskDescription"></p>
+
+  <div id="stationAnswerBox" class="hidden">
+    <p><strong>💬 Co ciekawego dowiedzieliście się podczas rozmowy?</strong></p>
+
+    <textarea
+      id="stationAnswer"
+      rows="4"
+      placeholder="Napiszcie krótką refleksję..."
+      style="width: 100%; box-sizing: border-box;"
+    ></textarea>
+  </div>
+
   <button onclick="completeStation()">
     Wykonaliśmy zadanie
   </button>
