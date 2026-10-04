@@ -190,6 +190,8 @@ document.getElementById("gameScreen").classList.remove("hidden");
 
 await showMap();
 
+alert("➡️ MAPA GOTOWA — URUCHAMIAM GPS");
+
   document.getElementById("welcome").innerHTML =
     "Witaj ponownie, patrolu <strong>" +
     patrol.name +
@@ -416,6 +418,7 @@ function startPomidorTimer() {
 }
 
 function startGPS() {
+  alert("🐀 START GPS");
   if (!navigator.geolocation) {
     alert("Ta przeglądarka nie obsługuje GPS.");
     return;
