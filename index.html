@@ -410,6 +410,12 @@ function distanceInMeters(lat1, lon1, lat2, lon2) {
 }
 
   function updateOtherPatrols() {
+
+      supabaseClient.rpc("resolve_expired_robberies")
+    .catch(error => {
+      console.error("Błąd rozliczania napadów:", error);
+    });
+    
   if (!window.patrolId || !map) {
     return;
   }
