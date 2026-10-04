@@ -190,8 +190,6 @@ document.getElementById("gameScreen").classList.remove("hidden");
 
 await showMap();
 
-alert("➡️ MAPA GOTOWA — URUCHAMIAM GPS");
-
   document.getElementById("welcome").innerHTML =
     "Witaj ponownie, patrolu <strong>" +
     patrol.name +
@@ -201,8 +199,6 @@ alert("➡️ MAPA GOTOWA — URUCHAMIAM GPS");
     "<br><br>" +
     "🏆 Punkty: " +
     patrol.points;
-
-   alert("🐀 WYWOŁUJĘ startGPS()");
    
  try {
   startGPS();
@@ -293,11 +289,8 @@ console.log("Punkty pobrane:", stations);
 
 stations.forEach(station => {
  if (station.type === "pomidor") {
-  alert("🍅 Pomidor został znaleziony!");
 
 const position = [54.4705, 18.4505];
-
-alert("📍 Pozycja Pomidora: " + position);
 
 station.latitude = position[0];
 station.longitude = position[1];
@@ -422,11 +415,8 @@ function startPomidorTimer() {
     );
   }, nextSlot - now);
 }
-
-    alert("🧪 SKRYPT GPS JEST WCZYTANY");
     
 function startGPS() {
-  alert("🐀 START GPS");
   if (!navigator.geolocation) {
     alert("Ta przeglądarka nie obsługuje GPS.");
     return;
