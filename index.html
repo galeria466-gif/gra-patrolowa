@@ -748,6 +748,47 @@ window.stations.forEach(station => {
 
   panel.classList.remove("hidden");
 }
+
+    async function activateMouseTrap() {
+  if (!window.pendingRobbery) {
+    alert("Nie ma aktywnego napadu.");
+    return;
+  }
+
+  const attackId = window.pendingRobbery.attack_id;
+
+  const { data, error } = await supabaseClient.rpc(
+    "respond_robbery_trap",
+    {
+      p_attack_id: attackId,
+      p_defender_patrol_id: window.patrolId
+    }
+  );
+
+  if (error) {
+    console.error("Błąd pułapki:", error);
+    alert("Nie udało się uruchomić pułapki.");
+    return;
+  }
+
+  const result = data[0];
+
+  if (!result.success) {
+    alert("ℹ️ " + result.message);
+    return;
+  }
+
+  document.getElementById("defensePanel").classList.add("hidden");
+  window.pendingRobbery = null;
+
+  alert(
+    "🪤 PUŁAPKA ZADZIAŁAŁA!\n\n" +
+    "Złapaliście patrol na gorącym uczynku.\n" +
+    "🏆 +" + result.points_changed + " pkt"
+  );
+
+  loadRanking();
+}
     
     setInterval(updateOtherPatrols, 5000);
     
