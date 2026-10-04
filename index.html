@@ -287,9 +287,9 @@ stations.forEach(station => {
  if (station.type === "pomidor") {
   alert("🍅 Pomidor został znaleziony!");
 
-  const position = getPomidorPosition();
+const position = [54.4705, 18.4505];
 
-  alert("📍 Pozycja Pomidora: " + position);
+alert("📍 Pozycja Pomidora: " + position);
 
 station.latitude = position[0];
 station.longitude = position[1];
