@@ -514,6 +514,25 @@ function distanceInMeters(lat1, lon1, lat2, lon2) {
     return;
   }
 
+      if (
+    window.patrolLatitude !== undefined &&
+    window.patrolLongitude !== undefined
+  ) {
+    supabaseClient.rpc(
+      "update_patrol_location",
+      {
+        p_patrol_id: window.patrolId,
+        p_latitude: window.patrolLatitude,
+        p_longitude: window.patrolLongitude
+      }
+    ).catch(error => {
+      console.error(
+        "Błąd aktualizacji pozycji patrolu:",
+        error
+      );
+    });
+  }
+
   supabaseClient.rpc(
     "get_patrol_locations",
     {
