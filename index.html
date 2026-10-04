@@ -505,9 +505,14 @@ function distanceInMeters(lat1, lon1, lat2, lon2) {
 
   function updateOtherPatrols() {
 
-      supabaseClient.rpc("resolve_expired_robberies")
-    .catch(error => {
-      console.error("Błąd rozliczania napadów:", error);
+    supabaseClient.rpc("resolve_expired_robberies")
+    .then(({ error }) => {
+      if (error) {
+        console.error(
+          "Błąd rozliczania napadów:",
+          error
+        );
+      }
     });
     
   if (!window.patrolId || !map) {
@@ -518,18 +523,20 @@ function distanceInMeters(lat1, lon1, lat2, lon2) {
     window.patrolLatitude !== undefined &&
     window.patrolLongitude !== undefined
   ) {
-    supabaseClient.rpc(
+supabaseClient.rpc(
       "update_patrol_location",
       {
         p_patrol_id: window.patrolId,
         p_latitude: window.patrolLatitude,
         p_longitude: window.patrolLongitude
       }
-    ).catch(error => {
-      console.error(
-        "Błąd aktualizacji pozycji patrolu:",
-        error
-      );
+    ).then(({ error }) => {
+      if (error) {
+        console.error(
+          "Błąd aktualizacji pozycji patrolu:",
+          error
+        );
+      }
     });
   }
 
