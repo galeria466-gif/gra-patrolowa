@@ -495,6 +495,16 @@ function startGPS() {
       const longitude = position.coords.longitude;
 
       console.log("GPS patrolu:", latitude, longitude);
+
+    await supabaseClient.rpc(
+  "update_patrol_location",
+  {
+    p_patrol_id: window.patrolId,
+    p_latitude: latitude,
+    p_longitude: longitude
+  }
+);
+    
       if (window.stations) {
         window.stations.forEach(station => {
   if (station.type === "pomidor") {
