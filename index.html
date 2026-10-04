@@ -539,35 +539,43 @@ async function completeStation() {
     return;
   }
 
- let password = null;
+  let password = null;
 
-if (window.currentStation.type === "osobowy") {
-  password = prompt("🔑 Podaj hasło otrzymane od punktowego:");
+  if (window.currentStation.type === "osobowy") {
+    password = prompt("🔑 Podaj hasło otrzymane od punktowego:");
 
-  if (password === null) {
-    return;
+    if (password === null) {
+      return;
+    }
   }
-}
 
-let answer = null;
+  let answer = null;
 
-if (window.currentStation.type === "poznajmy_sie") {
-  answer = document.getElementById("stationAnswer").value.trim();
+  if (
+    window.currentStation.type === "poznajmy_sie" ||
+    window.currentStation.type === "pomidor"
+  ) {
+    answer = document.getElementById("stationAnswer").value.trim();
 
-  if (!answer) {
-    alert("💬 Najpierw wpiszcie, czego ciekawego dowiedzieliście się podczas rozmowy.");
-    return;
+    if (!answer) {
+      if (window.currentStation.type === "pomidor") {
+        alert("🍅 Podajcie tylko liczbę.");
+      } else {
+        alert("💬 Najpierw wpiszcie, czego ciekawego dowiedzieliście się podczas rozmowy.");
+      }
+      return;
+    }
   }
-}
-const { data, error } = await supabaseClient.rpc(
-  "complete_station",
-  {
-    p_patrol_id: window.patrolId,
-    p_station_id: window.currentStation.id,
-    p_password: password
-    p_answer: answer
-  }
-);
+
+  const { data, error } = await supabaseClient.rpc(
+    "complete_station",
+    {
+      p_patrol_id: window.patrolId,
+      p_station_id: window.currentStation.id,
+      p_password: password,
+      p_answer: answer
+    }
+  );
 
   if (error) {
     console.error("Błąd zaliczania punktu:", error);
@@ -584,9 +592,9 @@ const { data, error } = await supabaseClient.rpc(
 
   document.getElementById("stationTask").classList.add("hidden");
   document.getElementById("stationAnswer").value = "";
-    
+
   window.activeStationId = null;
-window.currentStation = null;
+  window.currentStation = null;
 
   alert(
     "🎉 " +
