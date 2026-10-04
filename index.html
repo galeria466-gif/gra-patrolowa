@@ -378,11 +378,8 @@ function distanceInMeters(lat1, lon1, lat2, lon2) {
   [54.4702, 18.4520],
   [54.4712, 18.4495]
 ];
-        function getPomidorPosition() {
-  const fifteenMinutes = 15 * 60 * 1000;
-  const slot = Math.floor(Date.now() / fifteenMinutes);
-
-  return pomidorPositions[slot % pomidorPositions.length];
+       function getPomidorPosition() {
+  return [54.4705, 18.4505];
 }
     function updatePomidorPosition() {
   if (!window.pomidorMarker || !window.stations) {
