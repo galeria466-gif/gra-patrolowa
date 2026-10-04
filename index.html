@@ -848,8 +848,68 @@ window.stations.forEach(station => {
 
   loadRanking();
 }
+
+    async function checkRobberyResults() {
+  if (!window.patrolId) {
+    return;
+  }
+
+  const { data, error } = await supabaseClient.rpc(
+    "get_robbery_results",
+    {
+      p_patrol_id: window.patrolId
+    }
+  );
+
+  if (error) {
+    console.error("Błąd sprawdzania wyniku napadu:", error);
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    return;
+  }
+
+  if (!window.seenRobberyResults) {
+    window.seenRobberyResults = new Set();
+  }
+
+  data.forEach(result => {
+    if (window.seenRobberyResults.has(result.attack_id)) {
+      return;
+    }
+
+    window.seenRobberyResults.add(result.attack_id);
+
+    if (result.status === "successful") {
+      alert(
+        "🪙 KRADZIEŻ UDANA!\n\n" +
+        'Ukradliście patrolowi "' +
+        result.defender_patrol_name +
+        '" ' +
+        result.points +
+        " pkt."
+      );
+    }
+
+    if (result.status === "trapped") {
+      alert(
+        "🪤 WPADLIŚCIE W PUŁAPKĘ!\n\n" +
+        'Patrol "' +
+        result.defender_patrol_name +
+        '" złapał Was na gorącym uczynku.\n' +
+        "Straciliście " +
+        result.points +
+        " pkt."
+      );
+    }
+
+    loadRanking();
+  });
+}
     
     setInterval(updateOtherPatrols, 5000);
+    setInterval(checkRobberyResults, 5000);
     
 function startPomidorTimer() {
   const fifteenMinutes = 10 * 60 * 1000;
