@@ -371,6 +371,8 @@ window.activeStationId = station.id;
 
   const task = data[0];
 
+  console.log("Typ punktu:", task.type);
+
   window.currentStation = task;
 
   document.getElementById("stationTask").classList.remove("hidden");
