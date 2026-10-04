@@ -454,12 +454,23 @@ if (window.currentStation.type === "osobowy") {
   }
 }
 
+let answer = null;
+
+if (window.currentStation.type === "poznajmy_sie") {
+  answer = document.getElementById("stationAnswer").value.trim();
+
+  if (!answer) {
+    alert("💬 Najpierw wpiszcie, czego ciekawego dowiedzieliście się podczas rozmowy.");
+    return;
+  }
+}
 const { data, error } = await supabaseClient.rpc(
   "complete_station",
   {
     p_patrol_id: window.patrolId,
     p_station_id: window.currentStation.id,
     p_password: password
+    p_answer: answer
   }
 );
 
