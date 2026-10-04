@@ -395,6 +395,12 @@ window.activeStationId = station.id;
 
   document.getElementById("stationTaskDescription").textContent =
     task.description;
+  const answerBox = document.getElementById("stationAnswerBox");
+
+if (task.type === "poznajmy_sie") {
+  answerBox.classList.remove("hidden");
+} else {
+  answerBox.classList.add("hidden");
 }
   });
 }
