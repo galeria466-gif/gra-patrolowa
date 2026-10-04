@@ -284,10 +284,12 @@ window.stations = stations;
 console.log("Punkty pobrane:", stations);
 
 stations.forEach(station => {
-  if (station.type === "pomidor") {
-    alert("🍅 Pomidor został znaleziony!");
-    
-    const position = getPomidorPosition();
+ if (station.type === "pomidor") {
+  alert("🍅 Pomidor został znaleziony!");
+
+  const position = getPomidorPosition();
+
+  alert("📍 Pozycja Pomidora: " + position);
 
 station.latitude = position[0];
 station.longitude = position[1];
