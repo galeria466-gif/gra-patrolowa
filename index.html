@@ -267,6 +267,9 @@ await showMap();
 } catch (error) {
   alert("❌ BŁĄD GPS: " + error.message);
 }
+
+updateOtherPatrols();
+   
    startPomidorTimer();
    loadRanking();
 }
