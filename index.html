@@ -290,7 +290,7 @@ console.log("Punkty pobrane:", stations);
 stations.forEach(station => {
  if (station.type === "pomidor") {
 
-const position = [54.4705, 18.4505];
+const position = getPomidorPosition();
 
 station.latitude = position[0];
 station.longitude = position[1];
@@ -303,7 +303,7 @@ station.longitude = position[1];
     });
 
 window.pomidorMarker = L.marker(
-  [station.latitude, station.longitude],
+  position,
   { icon: tomatoIcon }
 )
   .addTo(map)
@@ -380,10 +380,10 @@ function distanceInMeters(lat1, lon1, lat2, lon2) {
   [54.4712, 18.4495]
 ];
 function getPomidorPosition() {
-  const minLat = 54.435;
-  const maxLat = 54.475;
-  const minLon = 18.445;
-  const maxLon = 18.495;
+  const minLat = 54.458;
+  const maxLat = 54.482;
+  const minLon = 18.480;
+  const maxLon = 18.512;
 
   const latitude =
     minLat + Math.random() * (maxLat - minLat);
@@ -403,10 +403,6 @@ function getPomidorPosition() {
   window.pomidorMarker.setLatLng(position);
       
 window.stations.forEach(station => {
-    if (station.type === "pomidor") {
-      station.latitude = position[0];
-      station.longitude = position[1];
-    }
   });
 }
 
