@@ -318,8 +318,9 @@ await showMap();
       "</strong><br><br>" +
       "Zapiszcie ten kod. Będzie potrzebny do wejścia do gry.";
         await showMap();
-    startGPS();
-    startPomidorTimer();
+startGPS();
+updateOtherPatrols();
+startPomidorTimer();
     loadRanking();
   }
 </script>
@@ -404,6 +405,69 @@ function distanceInMeters(lat1, lon1, lat2, lon2) {
 
   return R * c;
 }
+
+  function updateOtherPatrols() {
+  if (!window.patrolId || !map) {
+    return;
+  }
+
+  supabaseClient.rpc(
+    "get_patrol_locations",
+    {
+      p_patrol_id: window.patrolId
+    }
+  ).then(({ data, error }) => {
+    if (error) {
+      console.error("Błąd pobierania patroli:", error);
+      return;
+    }
+
+    if (!window.otherPatrolMarkers) {
+      window.otherPatrolMarkers = {};
+    }
+
+    const visiblePatrolIds = new Set();
+
+    data.forEach(patrol => {
+      visiblePatrolIds.add(patrol.patrol_id);
+
+      const position = [
+        patrol.latitude,
+        patrol.longitude
+      ];
+
+      if (!window.otherPatrolMarkers[patrol.patrol_id]) {
+        const ratIcon = L.divIcon({
+          className: "",
+          html: '<div style="font-size: 30px; text-shadow: 0 0 0 white, 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white;">🐀</div>',
+          iconSize: [35, 35],
+          iconAnchor: [17, 17]
+        });
+
+        window.otherPatrolMarkers[patrol.patrol_id] =
+          L.marker(position, {
+            icon: ratIcon
+          })
+            .addTo(map)
+            .bindTooltip(patrol.patrol_name);
+      } else {
+        window.otherPatrolMarkers[patrol.patrol_id]
+          .setLatLng(position);
+      }
+    });
+
+    Object.keys(window.otherPatrolMarkers).forEach(patrolId => {
+      if (!visiblePatrolIds.has(patrolId)) {
+        map.removeLayer(
+          window.otherPatrolMarkers[patrolId]
+        );
+
+        delete window.otherPatrolMarkers[patrolId];
+      }
+    });
+  });
+}
+  
 </script>
 
   <script>
