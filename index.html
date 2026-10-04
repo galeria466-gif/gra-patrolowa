@@ -89,17 +89,15 @@
     <button onclick="showLogin()">MAM KOD PATROLU</button>
   </div>
 
-  <div class="box hidden" id="gameScreen">
+<div class="box hidden" id="gameScreen" style="position: relative;">
 
-    <div
+  <div
   id="gameRules"
   style="
-    position: fixed;
-    right: 15px;
-    top: 15px;
-    width: 270px;
-    max-height: 85vh;
-    overflow-y: auto;
+    position: absolute;
+    left: calc(100% + 20px);
+    top: 0;
+    width: 260px;
     background: white;
     border: 3px solid #222;
     border-radius: 14px;
@@ -108,38 +106,47 @@
     z-index: 2000;
     font-size: 14px;
     line-height: 1.45;
+    box-sizing: border-box;
   "
 >
   <h3 style="margin-top: 0;">🐀 ZASADY GRY</h3>
 
-  <p><strong>🎯 Cel gry</strong><br>
-  Zdobywajcie jak najwięcej punktów, odwiedzając punkty na mapie.</p>
+  <p>
+    <strong>🎯 Cel gry</strong><br>
+    Zdobywajcie jak najwięcej punktów.
+  </p>
 
-  <p><strong>📍 Jak zaliczać punkty?</strong><br>
-  Podejdźcie do punktu na mapie. Gdy znajdziecie się wystarczająco blisko, pojawi się zadanie.</p>
+  <p>
+    <strong>📍 Jak zaliczać punkty?</strong><br>
+    Podejdźcie do punktu na mapie.<br>
+    Gdy znajdziecie się wystarczająco blisko, pojawi się zadanie.<br>
+    Każdy punkt można zaliczyć tylko raz.
+  </p>
 
-  <p><strong>⚫ Punkt nieosobowy</strong><br>
-  +5 pkt</p>
+  <p>
+    <strong>⚫ Punkt nieosobowy</strong><br>
+    +5 pkt
+  </p>
 
-  <p><strong>🟠 Punkt osobowy</strong><br>
-  +10 pkt<br>
-  Potrzebujecie hasła od punktowego.</p>
+  <p>
+    <strong>🟠 Punkt osobowy</strong><br>
+    +10 pkt
+  </p>
 
-  <p><strong>🔵 Poznajmy się</strong><br>
-  +1 pkt<br>
-  Odpowiadacie na pytanie związane z rozmową.</p>
+  <p>
+    <strong>🔵 Poznajmy się (:</strong><br>
+    +1 pkt
+  </p>
 
-  <p><strong>🍅 POMIDOR</strong><br>
-  +20 pkt<br>
-  Pomidor zmienia miejsce co 10 minut.<br>
-  Każdy patrol może zdobyć go tylko raz.</p>
-
-  <p><strong>🏆 Ważne</strong><br>
-  Każdy punkt można zaliczyć tylko raz.</p>
+  <p>
+    <strong>🍅 POMIDOR</strong><br>
+    +20 pkt<br>
+    Pomidor zmienia miejsce co 10 minut.<br>
+    Każdy patrol może zdobyć go tylko raz.
+  </p>
 
   <p style="margin-bottom: 0;">
-    <strong>🐀 Powodzenia!</strong><br>
-    Grajcie razem i bawcie się fair!
+    <strong>Powodzenia!</strong>
   </p>
 </div>
     
