@@ -94,6 +94,13 @@
    <p id="welcome"></p>
 
 <div id="map"></div>
+    <div id="stationTask" class="hidden">
+  <h3 id="stationTaskTitle"></h3>
+  <p id="stationTaskDescription"></p>
+  <button onclick="completeStation()">
+    Wykonaliśmy zadanie
+  </button>
+</div>
   </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -291,8 +298,8 @@ function startGPS() {
     return;
   }
 
-  navigator.geolocation.watchPosition(
-    position => {
+ navigator.geolocation.watchPosition(
+  async position => {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
 
@@ -306,8 +313,34 @@ function startGPS() {
       station.longitude
     );
 
-   if (distance <= station.activation_radius) {
-  alert("📍 Jesteście przy punkcie: " + station.name);
+if (distance <= station.activation_radius) {
+  const { data, error } = await supabaseClient.rpc(
+    "get_station_task",
+    {
+      p_station_id: station.id
+    }
+  );
+
+  if (error) {
+    console.error("Błąd pobierania zadania:", error);
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    return;
+  }
+
+  const task = data[0];
+
+  window.currentStation = task;
+
+  document.getElementById("stationTask").classList.remove("hidden");
+
+  document.getElementById("stationTaskTitle").textContent =
+    "📍 " + task.name;
+
+  document.getElementById("stationTaskDescription").textContent =
+    task.description;
 }
   });
 }
@@ -337,6 +370,11 @@ function startGPS() {
       timeout: 10000
     }
   );
+}
+</script>
+  <script>
+function completeStation() {
+  alert("🎉 Zadanie wykonane! Otrzymujecie punkty i literę.");
 }
 </script>
   
