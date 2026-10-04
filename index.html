@@ -295,6 +295,20 @@ function startGPS() {
       const longitude = position.coords.longitude;
 
       console.log("GPS patrolu:", latitude, longitude);
+      if (!window.patrolMarker) {
+  window.patrolMarker = L.circleMarker(
+    [latitude, longitude],
+    {
+      radius: 8,
+      color: "white",
+      fillColor: "purple",
+      fillOpacity: 1,
+      weight: 3
+    }
+  ).addTo(map);
+} else {
+  window.patrolMarker.setLatLng([latitude, longitude]);
+}
     },
     error => {
       console.error("Błąd GPS:", error);
