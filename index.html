@@ -243,6 +243,8 @@ async function showMap() {
   "get_stations"
 );
 
+  window.stations = stations;
+
 if (error) {
   console.error("Błąd pobierania punktów:", error);
   return;
@@ -295,6 +297,26 @@ function startGPS() {
       const longitude = position.coords.longitude;
 
       console.log("GPS patrolu:", latitude, longitude);
+      if (window.stations) {
+  window.stations.forEach(station => {
+    const distance = distanceInMeters(
+      latitude,
+      longitude,
+      station.latitude,
+      station.longitude
+    );
+
+    if (distance <= station.activation_radius) {
+      console.log(
+        "PATROL JEST PRZY PUNKCIE:",
+        station.name,
+        "Odległość:",
+        Math.round(distance),
+        "m"
+      );
+    }
+  });
+}
      if (!window.patrolMarker) {
   const ratIcon = L.divIcon({
     className: "",
