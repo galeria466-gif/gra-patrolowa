@@ -306,15 +306,9 @@ function startGPS() {
       station.longitude
     );
 
-    if (distance <= station.activation_radius) {
-      console.log(
-        "PATROL JEST PRZY PUNKCIE:",
-        station.name,
-        "Odległość:",
-        Math.round(distance),
-        "m"
-      );
-    }
+   if (distance <= station.activation_radius) {
+  alert("📍 Jesteście przy punkcie: " + station.name);
+}
   });
 }
      if (!window.patrolMarker) {
