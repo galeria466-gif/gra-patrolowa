@@ -203,7 +203,12 @@ alert("➡️ MAPA GOTOWA — URUCHAMIAM GPS");
     patrol.points;
 
    alert("🐀 WYWOŁUJĘ startGPS()");
-   startGPS();
+   
+ try {
+  startGPS();
+} catch (error) {
+  alert("❌ BŁĄD GPS: " + error.message);
+}
    startPomidorTimer();
    loadRanking();
 }
