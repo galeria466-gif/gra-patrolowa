@@ -175,6 +175,8 @@ showMap();
     "<br><br>" +
     "🏆 Punkty: " +
     patrol.points;
+
+   startGPS();
 }
   async function startGame() {
     const patrolName = document.getElementById("patrolName").value.trim();
@@ -280,5 +282,32 @@ function distanceInMeters(lat1, lon1, lat2, lon2) {
 }
 </script>
 
+  <script>
+function startGPS() {
+  if (!navigator.geolocation) {
+    alert("Ta przeglądarka nie obsługuje GPS.");
+    return;
+  }
+
+  navigator.geolocation.watchPosition(
+    position => {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+
+      console.log("GPS patrolu:", latitude, longitude);
+    },
+    error => {
+      console.error("Błąd GPS:", error);
+      alert("Nie udało się pobrać lokalizacji. Sprawdź zgodę na lokalizację.");
+    },
+    {
+      enableHighAccuracy: true,
+      maximumAge: 5000,
+      timeout: 10000
+    }
+  );
+}
+</script>
+  
 </body>
 </html>
