@@ -943,6 +943,32 @@ window.stations.forEach(station => {
     loadRanking();
   });
 }
+
+    setInterval(async () => {
+  if (
+    !window.patrolId ||
+    window.patrolLatitude === undefined ||
+    window.patrolLongitude === undefined
+  ) {
+    return;
+  }
+
+  const { error } = await supabaseClient.rpc(
+    "update_patrol_location",
+    {
+      p_patrol_id: window.patrolId,
+      p_latitude: window.patrolLatitude,
+      p_longitude: window.patrolLongitude
+    }
+  );
+
+  if (error) {
+    console.error(
+      "Błąd odświeżania pozycji patrolu:",
+      error
+    );
+  }
+}, 10000);
     
     setInterval(updateOtherPatrols, 5000);
     setInterval(checkRobberyResults, 5000);
