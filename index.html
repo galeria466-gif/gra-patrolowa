@@ -705,6 +705,49 @@ window.stations.forEach(station => {
   document.getElementById("robberyPanel").classList.add("hidden");
   window.robberyTargetPatrolId = null;
 }
+
+    async function checkPendingRobberies() {
+  if (!window.patrolId) {
+    return;
+  }
+
+  const { data, error } = await supabaseClient.rpc(
+    "get_pending_robberies",
+    {
+      p_patrol_id: window.patrolId
+    }
+  );
+
+  if (error) {
+    console.error("Błąd sprawdzania napadów:", error);
+    return;
+  }
+
+  const panel = document.getElementById("defensePanel");
+
+  if (!panel) {
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    window.pendingRobbery = null;
+    panel.classList.add("hidden");
+    return;
+  }
+
+  const attack = data[0];
+
+  window.pendingRobbery = attack;
+
+  document.getElementById("defenseMessage").textContent =
+    'Patrol "' +
+    attack.attacker_patrol_name +
+    '" próbuje ukraść Wam ' +
+    attack.points +
+    " pkt.";
+
+  panel.classList.remove("hidden");
+}
     
     setInterval(updateOtherPatrols, 5000);
     
