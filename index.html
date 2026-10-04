@@ -158,6 +158,39 @@
   <h2>🏆 Ranking patroli</h2>
   <div id="rankingList">Ładowanie rankingu...</div>
 </div>
+
+  <div
+  id="robberyPanel"
+  class="hidden"
+  style="
+    margin-top: 20px;
+    padding: 15px;
+    background: white;
+    border: 3px solid #222;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  "
+>
+  <h3 style="margin-top: 0;">🐀 Patrol w zasięgu!</h3>
+
+  <p id="robberyTargetName"></p>
+
+  <label for="robberyPoints">Ile punktów chcecie ukraść? (maks. 10)</label>
+
+  <input
+    type="number"
+    id="robberyPoints"
+    min="1"
+    max="10"
+    value="1"
+    style="width: 100%; box-sizing: border-box; margin: 8px 0;"
+  >
+
+  <button onclick="startRobbery()">
+    🪙 OKRADNIJ
+  </button>
+</div>
+  
    <div id="stationTask" class="hidden">
   <h3 id="stationTaskTitle"></h3>
 
