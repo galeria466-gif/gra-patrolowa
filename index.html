@@ -739,6 +739,8 @@ window.stations.forEach(station => {
 
   window.pendingRobbery = attack;
 
+        updateRobberyCountdown();
+      
   document.getElementById("defenseMessage").textContent =
     'Patrol "' +
     attack.attacker_patrol_name +
@@ -749,6 +751,63 @@ window.stations.forEach(station => {
   panel.classList.remove("hidden");
 }
 
+    function updateRobberyCountdown() {
+  if (!window.pendingRobbery) {
+    return;
+  }
+
+  const timerElement = document.getElementById("defenseTimer");
+
+  if (!timerElement) {
+    return;
+  }
+
+  const deadline = new Date(
+    window.pendingRobbery.response_deadline
+  ).getTime();
+
+  if (window.robberyCountdownInterval) {
+    clearInterval(window.robberyCountdownInterval);
+  }
+
+  function update() {
+    const remaining = Math.max(
+      0,
+      deadline - Date.now()
+    );
+
+    const totalSeconds = Math.ceil(
+      remaining / 1000
+    );
+
+    const minutes = Math.floor(
+      totalSeconds / 60
+    );
+
+    const seconds = totalSeconds % 60;
+
+    timerElement.textContent =
+      "⏱️ Czas na reakcję: " +
+      String(minutes).padStart(2, "0") +
+      ":" +
+      String(seconds).padStart(2, "0");
+
+    if (remaining <= 0) {
+      clearInterval(
+        window.robberyCountdownInterval
+      );
+
+      timerElement.textContent =
+        "⏰ Czas na reakcję minął.";
+    }
+  }
+
+  update();
+
+  window.robberyCountdownInterval =
+    setInterval(update, 1000);
+}
+    
     async function activateMouseTrap() {
   if (!window.pendingRobbery) {
     alert("Nie ma aktywnego napadu.");
