@@ -371,6 +371,10 @@ window.activeStationId = station.id;
 
   const task = data[0];
 
+  if (station.type === "osobowy") {
+  console.log("Punkt osobowy:", station.name);
+}
+
   window.currentStation = task;
 
   document.getElementById("stationTask").classList.remove("hidden");
