@@ -604,6 +604,9 @@ function startGPS() {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
 
+window.patrolLatitude = latitude;
+window.patrolLongitude = longitude;
+
       console.log("GPS patrolu:", latitude, longitude);
 
     await supabaseClient.rpc(
