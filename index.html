@@ -188,7 +188,7 @@
 document.getElementById("startScreen").classList.add("hidden");
 document.getElementById("gameScreen").classList.remove("hidden");
 
-showMap();
+await showMap();
 
   document.getElementById("welcome").innerHTML =
     "Witaj ponownie, patrolu <strong>" +
@@ -251,6 +251,10 @@ showMap();
       patrol.access_code +
       "</strong><br><br>" +
       "Zapiszcie ten kod. Będzie potrzebny do wejścia do gry.";
+        await showMap();
+    startGPS();
+    startPomidorTimer();
+    loadRanking();
   }
 </script>
 
@@ -267,16 +271,17 @@ async function showMap() {
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap contributors"
     }).addTo(map);
-   const { data: stations, error } = await supabaseClient.rpc(
+const { data: stations, error } = await supabaseClient.rpc(
   "get_stations"
 );
-
-  window.stations = stations;
 
 if (error) {
   console.error("Błąd pobierania punktów:", error);
   return;
 }
+
+window.stations = stations;
+console.log("Punkty pobrane:", stations);
 
 stations.forEach(station => {
   if (station.type === "pomidor") {
