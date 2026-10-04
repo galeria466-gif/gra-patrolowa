@@ -285,6 +285,8 @@ console.log("Punkty pobrane:", stations);
 
 stations.forEach(station => {
   if (station.type === "pomidor") {
+    alert("🍅 Pomidor został znaleziony!");
+    
     const position = getPomidorPosition();
 
 station.latitude = position[0];
