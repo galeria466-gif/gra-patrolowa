@@ -561,16 +561,31 @@ function distanceInMeters(lat1, lon1, lat2, lon2) {
       ];
 
       if (!window.otherPatrolMarkers[patrol.patrol_id]) {
-        const ratIcon = L.divIcon({
-          className: "",
-          html: '<div style="font-size: 30px; text-shadow: 0 0 0 white, 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white;">🐀</div>',
-          iconSize: [35, 35],
-          iconAnchor: [17, 17]
-        });
+        const patrolIcon = L.divIcon({
+  className: "",
+  html: `
+    <div style="
+      width: 32px;
+      height: 32px;
+      background: #2196f3;
+      border: 3px solid white;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+    ">🐀</div>
+  `,
+  iconSize: [38, 38],
+  iconAnchor: [19, 19]
+});
 
         window.otherPatrolMarkers[patrol.patrol_id] =
           L.marker(position, {
-            icon: ratIcon
+icon: patrolIcon
           })
             .addTo(map)
             .bindTooltip(patrol.patrol_name);
