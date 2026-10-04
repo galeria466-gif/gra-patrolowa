@@ -470,6 +470,8 @@ function distanceInMeters(lat1, lon1, lat2, lon2) {
 
     const visiblePatrolIds = new Set();
 
+        checkRobberyRange(data);
+    
     data.forEach(patrol => {
       visiblePatrolIds.add(patrol.patrol_id);
 
@@ -574,6 +576,111 @@ window.stations.forEach(station => {
   });
 }
 
+    function checkRobberyRange(patrols) {
+  if (
+    window.patrolLatitude === undefined ||
+    window.patrolLongitude === undefined
+  ) {
+    return;
+  }
+
+  let nearestPatrol = null;
+  let nearestDistance = Infinity;
+
+  patrols.forEach(patrol => {
+    const distance = distanceInMeters(
+      window.patrolLatitude,
+      window.patrolLongitude,
+      patrol.latitude,
+      patrol.longitude
+    );
+
+    if (distance <= 20 && distance < nearestDistance) {
+      nearestDistance = distance;
+      nearestPatrol = patrol;
+    }
+  });
+
+  const panel = document.getElementById("robberyPanel");
+
+  if (!panel) {
+    return;
+  }
+
+  if (nearestPatrol) {
+    window.robberyTargetPatrolId = nearestPatrol.patrol_id;
+
+    document.getElementById("robberyTargetName").textContent =
+      "Patrol: " + nearestPatrol.patrol_name;
+
+    panel.classList.remove("hidden");
+  } else {
+    window.robberyTargetPatrolId = null;
+    panel.classList.add("hidden");
+  }
+}
+
+    async function startRobbery() {
+  if (!window.patrolId) {
+    alert("Brak danych patrolu.");
+    return;
+  }
+
+  if (!window.robberyTargetPatrolId) {
+    alert("Nie ma patrolu w zasięgu.");
+    return;
+  }
+
+  const points = parseInt(
+    document.getElementById("robberyPoints").value,
+    10
+  );
+
+  if (isNaN(points) || points < 1 || points > 10) {
+    alert("Możecie ukraść od 1 do 10 punktów.");
+    return;
+  }
+
+  const { data, error } = await supabaseClient.rpc(
+    "start_robbery",
+    {
+      p_attacker_patrol_id: window.patrolId,
+      p_defender_patrol_id: window.robberyTargetPatrolId,
+      p_points: points
+    }
+  );
+
+  if (error) {
+    console.error("Błąd rozpoczęcia napadu:", error);
+    alert("Nie udało się rozpocząć napadu.");
+    return;
+  }
+
+  const result = data[0];
+
+  if (!result.success) {
+    alert("ℹ️ " + result.message);
+    return;
+  }
+
+  const deadline = new Date(result.response_deadline);
+  const now = new Date();
+
+  const minutes = Math.max(
+    1,
+    Math.ceil((deadline - now) / 60000)
+  );
+
+  alert(
+    "🪙 Napad rozpoczęty!\n\n" +
+    "Zabraliście: " + points + " pkt\n" +
+    "⏱️ Patrol ma około " + minutes + " min na reakcję."
+  );
+
+  document.getElementById("robberyPanel").classList.add("hidden");
+  window.robberyTargetPatrolId = null;
+}
+    
     setInterval(updateOtherPatrols, 5000);
     
 function startPomidorTimer() {
