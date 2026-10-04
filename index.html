@@ -379,8 +379,19 @@ function distanceInMeters(lat1, lon1, lat2, lon2) {
   [54.4702, 18.4520],
   [54.4712, 18.4495]
 ];
-       function getPomidorPosition() {
-  return [54.4705, 18.4505];
+function getPomidorPosition() {
+  const minLat = 54.425;
+  const maxLat = 54.475;
+  const minLon = 18.430;
+  const maxLon = 18.520;
+
+  const latitude =
+    minLat + Math.random() * (maxLat - minLat);
+
+  const longitude =
+    minLon + Math.random() * (maxLon - minLon);
+
+  return [latitude, longitude];
 }
     function updatePomidorPosition() {
   if (!window.pomidorMarker || !window.stations) {
@@ -400,7 +411,7 @@ window.stations.forEach(station => {
 }
 
 function startPomidorTimer() {
-  const fifteenMinutes = 15 * 60 * 1000;
+  const fifteenMinutes = 10 * 60 * 1000;
 
   const now = Date.now();
   const nextSlot =
@@ -411,7 +422,7 @@ function startPomidorTimer() {
 
     setInterval(
       updatePomidorPosition,
-      fifteenMinutes
+      tenMinutes
     );
   }, nextSlot - now);
 }
