@@ -103,16 +103,16 @@
 
   <p id="stationTaskDescription"></p>
 
-  <div id="stationAnswerBox" class="hidden">
-    <p><strong>💬 Co ciekawego dowiedzieliście się podczas rozmowy?</strong></p>
+ <div id="stationAnswerBox" class="hidden">
+  <p id="stationAnswerLabel"><strong>💬 Odpowiedź:</strong></p>
 
-    <textarea
-      id="stationAnswer"
-      rows="4"
-      placeholder="Napiszcie krótką refleksję..."
-      style="width: 100%; box-sizing: border-box;"
-    ></textarea>
-  </div>
+  <textarea
+    id="stationAnswer"
+    rows="4"
+    placeholder="Wpiszcie odpowiedź..."
+    style="width: 100%; box-sizing: border-box;"
+  ></textarea>
+</div>
 
   <button onclick="completeStation()">
     Wykonaliśmy zadanie
@@ -278,17 +278,34 @@ if (error) {
 }
 
 stations.forEach(station => {
-  L.circleMarker(
-    [station.latitude, station.longitude],
-    {
-      radius: 9,
-      color: station.color,
-      fillColor: station.color,
-      fillOpacity: 1
-    }
-  )
-    .addTo(map)
+  if (station.type === "pomidor") {
+    const tomatoIcon = L.divIcon({
+      className: "",
+      html: '<div style="font-size: 32px;">🍅</div>',
+      iconSize: [35, 35],
+      iconAnchor: [17, 17]
+    });
+
+    L.marker(
+      [station.latitude, station.longitude],
+      { icon: tomatoIcon }
+    )
+      .addTo(map)
       .bindTooltip(station.name);
+
+  } else {
+    L.circleMarker(
+      [station.latitude, station.longitude],
+      {
+        radius: 9,
+        color: station.color,
+        fillColor: station.color,
+        fillOpacity: 1
+      }
+    )
+      .addTo(map)
+      .bindTooltip(station.name);
+  }
 });
   }
 </script>
@@ -397,8 +414,24 @@ window.activeStationId = station.id;
     task.description;
   const answerBox = document.getElementById("stationAnswerBox");
 
+const answerBox = document.getElementById("stationAnswerBox");
+const answerLabel = document.getElementById("stationAnswerLabel");
+const answerField = document.getElementById("stationAnswer");
+
 if (task.type === "poznajmy_sie") {
   answerBox.classList.remove("hidden");
+  answerLabel.innerHTML =
+    "<strong>💬 Co ciekawego dowiedzieliście się podczas rozmowy?</strong>";
+  answerField.placeholder =
+    "Napiszcie krótką refleksję...";
+
+} else if (task.type === "pomidor") {
+  answerBox.classList.remove("hidden");
+  answerLabel.innerHTML =
+    "<strong>🍅 Podajcie tylko liczbę:</strong>";
+  answerField.placeholder =
+    "Wpiszcie liczbę...";
+
 } else {
   answerBox.classList.add("hidden");
 }
