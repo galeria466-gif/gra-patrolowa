@@ -488,6 +488,8 @@ const { data, error } = await supabaseClient.rpc(
   }
 
   document.getElementById("stationTask").classList.add("hidden");
+  document.getElementById("stationAnswer").value = "";
+    
   window.activeStationId = null;
 window.currentStation = null;
 
