@@ -1437,36 +1437,6 @@ async function completeStation() {
       }
     }
   }
-let coordinateMessage = "";
-
-if (
-  window.currentStation.type === "osobowy" ||
-  window.currentStation.type === "nieosobowy"
-) {
-  const { data: digitData, error: digitError } =
-    await supabaseClient.rpc(
-      "assign_coordinate_digit",
-      {
-        p_patrol_id: window.patrolId,
-        p_station_id: window.currentStation.id
-      }
-    );
-
-  if (digitError) {
-    console.error(
-      "Błąd przydzielania cyfry hasła:",
-      digitError
-    );
-  } else if (digitData && digitData.length > 0) {
-    const digitResult = digitData[0];
-
-    if (digitResult.success) {
-      coordinateMessage =
-        "\n🔐 Odkryliście cyfrę: " +
-        digitResult.digit;
-    }
-  }
-}
   document.getElementById("stationTask").classList.add("hidden");
   document.getElementById("stationAnswer").value = "";
 
