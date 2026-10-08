@@ -1377,20 +1377,26 @@ async function loadCoordinatePassword() {
   const finalButton =
     document.getElementById("finalDestinationButton");
 
-  passwordElement.textContent =
-    result.password_display;
+  if (passwordElement) {
+    passwordElement.textContent =
+      result.password_display;
+  }
 
   if (result.complete) {
-    infoElement.innerHTML =
-      "✅ <strong>HASŁO KOMPLETNE!</strong><br>" +
-      "Odkryliście całą lokalizację finałową.";
+    if (infoElement) {
+      infoElement.innerHTML =
+        "✅ <strong>HASŁO KOMPLETNE!</strong><br>" +
+        "Odkryliście całą lokalizację finałową.";
+    }
 
     if (finalButton) {
       finalButton.classList.remove("hidden");
     }
   } else {
-    infoElement.textContent =
-      "Cyfry zdobywacie wyłącznie za punkty osobowe i nieosobowe.";
+    if (infoElement) {
+      infoElement.textContent =
+        "Cyfry zdobywacie wyłącznie za punkty osobowe i nieosobowe.";
+    }
 
     if (finalButton) {
       finalButton.classList.add("hidden");
