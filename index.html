@@ -619,29 +619,47 @@ icon: patrolIcon
 </script>
 
   <script>
-    async function loadRanking() {
-  const { data, error } = await supabaseClient
-    .from("patrols")
-    .select("name, points")
-    .order("points", { ascending: false })
-    .order("name", { ascending: true });
+async function loadRanking() {
+  const { data, error } = await supabaseClient.rpc(
+    "get_ranking"
+  );
 
   if (error) {
-    console.error("Błąd pobierania rankingu:", error);
+    console.error(
+      "Błąd pobierania rankingu:",
+      error
+    );
+
     document.getElementById("rankingList").textContent =
       "Nie udało się pobrać rankingu.";
+
     return;
   }
 
-  const rankingList = document.getElementById("rankingList");
+  const rankingList =
+    document.getElementById("rankingList");
 
   rankingList.innerHTML = "";
+
+  if (!data || data.length === 0) {
+    rankingList.textContent =
+      "Brak patroli w rankingu.";
+
+    return;
+  }
 
   data.forEach((patrol, index) => {
     const row = document.createElement("div");
 
+    row.style.padding = "6px 0";
+
     row.textContent =
-      (index + 1) + ". " + patrol.name + " — " + patrol.points + " pkt";
+      (index + 1) +
+      ". " +
+      patrol.patrol_name +
+      " — " +
+      patrol.points +
+      " pkt";
 
     rankingList.appendChild(row);
   });
