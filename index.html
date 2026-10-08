@@ -242,6 +242,40 @@ z-index: 2000;
   <strong>🏆 Wasze punkty: 0</strong>
 </p>
 
+  <div
+  id="coordinatePasswordPanel"
+  style="
+    margin-top: 20px;
+    padding: 15px;
+    background: white;
+    border: 3px solid #222;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  "
+>
+  <h3 style="margin-top: 0;">🔐 HASŁO DO CELU</h3>
+
+  <div
+    id="coordinatePassword"
+    style="
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 3px;
+      margin: 12px 0;
+    "
+  >
+    __.______,__.__
+  </div>
+
+  <p
+    id="coordinatePasswordInfo"
+    style="margin-bottom: 0;"
+  >
+    Zbierajcie cyfry za punkty osobowe i nieosobowe.
+  </p>
+</div>
+
 <div id="map"></div>
     <div id="ranking" style="margin-top: 20px; padding: 15px; background: white; border-radius: 12px;">
   <h2>🏆 Ranking patroli</h2>
@@ -1109,6 +1143,7 @@ setInterval(updateOtherPatrols, 5000);
 setInterval(loadRanking, 5000);
 setInterval(checkPendingRobberies, 5000);
 setInterval(checkRobberyResults, 5000);
+setInterval(loadCoordinatePassword, 5000);
     
 function startPomidorTimer() {
   const fifteenMinutes = 10 * 60 * 1000;
@@ -1259,6 +1294,49 @@ if (task.type === "poznajmy_sie") {
 }
 </script>
   <script>
+    async function loadCoordinatePassword() {
+  if (!window.patrolId) {
+    return;
+  }
+
+  const { data, error } = await supabaseClient.rpc(
+    "get_coordinate_password",
+    {
+      p_patrol_id: window.patrolId
+    }
+  );
+
+  if (error) {
+    console.error(
+      "Błąd pobierania hasła:",
+      error
+    );
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    return;
+  }
+
+  const result = data[0];
+
+  document.getElementById(
+    "coordinatePassword"
+  ).textContent = result.password_display;
+
+  const info = document.getElementById(
+    "coordinatePasswordInfo"
+  );
+
+  if (result.complete) {
+    info.innerHTML =
+      "<strong>✅ HASŁO KOMPLETNE!</strong><br>" +
+      "Możecie iść do celu.";
+  } else {
+    info.textContent =
+      "Cyfry zdobywacie wyłącznie za punkty osobowe i nieosobowe.";
+  }
+}
 async function completeStation() {
   if (!window.currentStation) {
     alert("Nie wybrano punktu.");
@@ -1335,6 +1413,7 @@ async function completeStation() {
     " punktów" +
     (result.letter ? "\n🔤 Litera: " + result.letter : "")
   );
+  loadCoordinatePassword();
 }
 </script>
   
