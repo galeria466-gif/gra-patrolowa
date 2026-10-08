@@ -1055,9 +1055,10 @@ window.stations.forEach(station => {
   }
 }, 10000);
     
-    setInterval(updateOtherPatrols, 5000);
-    setInterval(loadRanking, 5000);
-    setInterval(checkRobberyResults, 5000);
+setInterval(updateOtherPatrols, 5000);
+setInterval(loadRanking, 5000);
+setInterval(checkPendingRobberies, 5000);
+setInterval(checkRobberyResults, 5000);
     
 function startPomidorTimer() {
   const fifteenMinutes = 10 * 60 * 1000;
