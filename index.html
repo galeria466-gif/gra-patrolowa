@@ -1294,7 +1294,7 @@ if (task.type === "poznajmy_sie") {
 }
 </script>
   <script>
-    async function loadCoordinatePassword() {
+async function loadCoordinatePassword() {
   if (!window.patrolId) {
     return;
   }
@@ -1307,10 +1307,7 @@ if (task.type === "poznajmy_sie") {
   );
 
   if (error) {
-    console.error(
-      "Błąd pobierania hasła:",
-      error
-    );
+    console.error("Błąd pobierania hasła:", error);
     return;
   }
 
@@ -1320,21 +1317,33 @@ if (task.type === "poznajmy_sie") {
 
   const result = data[0];
 
-  document.getElementById(
-    "coordinatePassword"
-  ).textContent = result.password_display;
+  const passwordElement =
+    document.getElementById("coordinatePassword");
 
-  const info = document.getElementById(
-    "coordinatePasswordInfo"
-  );
+  const infoElement =
+    document.getElementById("coordinatePasswordInfo");
+
+  const finalButton =
+    document.getElementById("finalDestinationButton");
+
+  passwordElement.textContent =
+    result.password_display;
 
   if (result.complete) {
-    info.innerHTML =
-      "<strong>✅ HASŁO KOMPLETNE!</strong><br>" +
-      "Możecie iść do celu.";
+    infoElement.innerHTML =
+      "✅ <strong>HASŁO KOMPLETNE!</strong><br>" +
+      "Odkryliście całą lokalizację finałową.";
+
+    if (finalButton) {
+      finalButton.classList.remove("hidden");
+    }
   } else {
-    info.textContent =
+    infoElement.textContent =
       "Cyfry zdobywacie wyłącznie za punkty osobowe i nieosobowe.";
+
+    if (finalButton) {
+      finalButton.classList.add("hidden");
+    }
   }
 }
 async function completeStation() {
@@ -1398,22 +1407,82 @@ async function completeStation() {
     alert("ℹ️ " + result.message);
     return;
   }
+    let coordinateMessage = "";
 
+  if (
+    window.currentStation.type === "osobowy" ||
+    window.currentStation.type === "nieosobowy"
+  ) {
+    const { data: digitData, error: digitError } =
+      await supabaseClient.rpc(
+        "assign_coordinate_digit",
+        {
+          p_patrol_id: window.patrolId,
+          p_station_id: window.currentStation.id
+        }
+      );
+
+    if (digitError) {
+      console.error(
+        "Błąd przydzielania cyfry hasła:",
+        digitError
+      );
+    } else if (digitData && digitData.length > 0) {
+      const digitResult = digitData[0];
+
+      if (digitResult.success) {
+        coordinateMessage =
+          "\n🔐 Odkryliście cyfrę: " +
+          digitResult.digit;
+      }
+    }
+  }
+let coordinateMessage = "";
+
+if (
+  window.currentStation.type === "osobowy" ||
+  window.currentStation.type === "nieosobowy"
+) {
+  const { data: digitData, error: digitError } =
+    await supabaseClient.rpc(
+      "assign_coordinate_digit",
+      {
+        p_patrol_id: window.patrolId,
+        p_station_id: window.currentStation.id
+      }
+    );
+
+  if (digitError) {
+    console.error(
+      "Błąd przydzielania cyfry hasła:",
+      digitError
+    );
+  } else if (digitData && digitData.length > 0) {
+    const digitResult = digitData[0];
+
+    if (digitResult.success) {
+      coordinateMessage =
+        "\n🔐 Odkryliście cyfrę: " +
+        digitResult.digit;
+    }
+  }
+}
   document.getElementById("stationTask").classList.add("hidden");
   document.getElementById("stationAnswer").value = "";
 
   window.activeStationId = null;
   window.currentStation = null;
 
-  alert(
-    "🎉 " +
-    result.message +
-    "\n\n🏆 +" +
-    result.points_added +
-    " punktów" +
-    (result.letter ? "\n🔤 Litera: " + result.letter : "")
-  );
-  loadCoordinatePassword();
+alert(
+  "🎉 " +
+  result.message +
+  "\n\n🏆 +" +
+  result.points_added +
+  " punktów" +
+  coordinateMessage
+);
+
+loadCoordinatePassword();
 }
 </script>
   
