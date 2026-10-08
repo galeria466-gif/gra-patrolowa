@@ -188,6 +188,9 @@ z-index: 2000;
     
     <h1>🗺️ Gra rozpoczęta!</h1>
    <p id="welcome"></p>
+  <p id="currentPatrolPoints">
+  <strong>🏆 Wasze punkty: 0</strong>
+</p>
 
 <div id="map"></div>
     <div id="ranking" style="margin-top: 20px; padding: 15px; background: white; border-radius: 12px;">
@@ -620,6 +623,17 @@ icon: patrolIcon
 
   <script>
 async function loadRanking() {
+  function getCurrentPatrolName() {
+  const welcome = document.getElementById("welcome");
+
+  if (!welcome) {
+    return null;
+  }
+
+  const match = welcome.innerText.match(/patrolu\s+(.+?)!/i);
+
+  return match ? match[1].trim() : null;
+}
   const { data, error } = await supabaseClient.rpc(
     "get_ranking"
   );
@@ -649,6 +663,16 @@ async function loadRanking() {
   }
 
   data.forEach((patrol, index) => {
+    const myPatrol = data.find(
+  patrol => patrol.patrol_name === getCurrentPatrolName()
+);
+
+if (myPatrol) {
+  document.getElementById("currentPatrolPoints").innerHTML =
+    "<strong>🏆 Wasze punkty: " +
+    myPatrol.points +
+    "</strong>";
+}
     const row = document.createElement("div");
 
     row.style.padding = "6px 0";
@@ -1032,6 +1056,7 @@ window.stations.forEach(station => {
 }, 10000);
     
     setInterval(updateOtherPatrols, 5000);
+    setInterval(loadRanking, 5000);
     setInterval(checkRobberyResults, 5000);
     
 function startPomidorTimer() {
