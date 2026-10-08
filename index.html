@@ -274,6 +274,13 @@ z-index: 2000;
   >
     Zbierajcie cyfry za punkty osobowe i nieosobowe.
   </p>
+    <button
+  id="finalDestinationButton"
+  class="hidden"
+  onclick="goToFinalDestination()"
+>
+  📍 POKAŻ CEL FINAŁOWY
+</button>
 </div>
 
 <div id="map"></div>
@@ -1296,6 +1303,48 @@ if (task.type === "poznajmy_sie") {
 }
 </script>
   <script>
+    function goToFinalDestination() {
+  const finalLatitude = 54.458458;
+  const finalLongitude = 18.470200;
+
+  if (!map) {
+    alert("Mapa nie jest jeszcze gotowa.");
+    return;
+  }
+
+  map.setView(
+    [finalLatitude, finalLongitude],
+    17
+  );
+
+  if (!window.finalDestinationMarker) {
+    const finalIcon = L.divIcon({
+      className: "",
+      html: `
+        <div style="
+          font-size: 38px;
+          text-shadow:
+            0 0 3px white,
+            2px 2px 0 white,
+            -2px -2px 0 white,
+            2px -2px 0 white,
+            -2px 2px 0 white;
+        ">🏁</div>
+      `,
+      iconSize: [42, 42],
+      iconAnchor: [21, 21]
+    });
+
+    window.finalDestinationMarker =
+      L.marker(
+        [finalLatitude, finalLongitude],
+        { icon: finalIcon }
+      )
+      .addTo(map)
+      .bindTooltip("🏁 CEL FINAŁOWY")
+      .openTooltip();
+  }
+}
 async function loadCoordinatePassword() {
   if (!window.patrolId) {
     return;
