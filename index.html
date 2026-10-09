@@ -1414,6 +1414,40 @@ async function completeStation() {
     return;
   }
 
+    // Pomidor może być zaliczony tylko z bliska
+  if (window.currentStation.type === "pomidor") {
+    const patrolLat = window.patrolLatitude;
+    const patrolLon = window.patrolLongitude;
+
+    if (
+      typeof patrolLat !== "number" ||
+      typeof patrolLon !== "number" ||
+      !window.pomidorMarker
+    ) {
+      alert("📍 Czekamy na lokalizację GPS. Spróbujcie za chwilę.");
+      return;
+    }
+
+    const tomatoPosition = window.pomidorMarker.getLatLng();
+
+    const distance = distanceInMeters(
+      patrolLat,
+      patrolLon,
+      tomatoPosition.lat,
+      tomatoPosition.lng
+    );
+
+    if (distance > 20) {
+      alert(
+        "🍅 Jesteście za daleko od Pomidora!\n\n" +
+        "Wasza odległość: około " +
+        Math.round(distance) +
+        " m.\nPodejdźcie na maksymalnie 20 metrów."
+      );
+      return;
+    }
+  }
+  
   let password = null;
 
   if (window.currentStation.type === "osobowy") {
