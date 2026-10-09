@@ -287,6 +287,17 @@ z-index: 2000;
     <div id="ranking" style="margin-top: 20px; padding: 15px; background: white; border-radius: 12px;">
   <h2>🏆 Ranking patroli</h2>
   <div id="rankingList">Ładowanie rankingu...</div>
+
+      <div
+  id="gameNotifications"
+  style="
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  "
+></div>
+      
 </div>
 
   <div
@@ -381,10 +392,34 @@ z-index: 2000;
 
   const SUPABASE_KEY = "sb_publishable_yxPju_eBSScU-StHJ57A9A_7VHADiI7";
 
-  const supabaseClient = supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+function showGameNotification(message, type = "info") {
+  const container = document.getElementById("gameNotifications");
+
+  if (!container) {
+    console.warn("Brak obszaru komunikatów:", message);
+    return;
+  }
+
+  const notice = document.createElement("div");
+
+  notice.style.padding = "12px";
+  notice.style.borderRadius = "10px";
+  notice.style.border = "2px solid #222";
+  notice.style.background =
+    type === "success" ? "#d1e7dd" :
+    type === "warning" ? "#fff3cd" :
+    "#e2e3e5";
+  notice.style.color = "#222";
+  notice.style.whiteSpace = "pre-line";
+  notice.textContent = message;
+
+  container.prepend(notice);
+}
 
   function showLogin() {
     document.getElementById("startScreen").innerHTML = `
@@ -964,11 +999,13 @@ async function updatePomidorPosition() {
     return;
   }
 
-  if (!data || data.length === 0) {
-    window.pendingRobbery = null;
+if (!data || data.length === 0) {
+  // Nie kasuj aktualnego napadu, jeśli już jest wyświetlany.
+  if (!window.pendingRobbery) {
     panel.classList.add("hidden");
-    return;
   }
+  return;
+}
 
   const attack = data[0];
 
