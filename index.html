@@ -1555,9 +1555,33 @@ if (task.type === "poznajmy_sie") {
   answerField.placeholder =
     "Wpiszcie liczbę...";
 
+
+} else if (
+  task.type === "nieosobowy" &&
+  [
+    "Nieosobowy 04",
+    "Nieosobowy 05",
+    "Nieosobowy 06",
+    "Nieosobowy 08",
+    "Nieosobowy 09",
+    "Nieosobowy 10",
+    "Nieosobowy 11",
+    "Nieosobowy 12",
+    "Nieosobowy 13",
+    "Nieosobowy 14",
+    "Nieosobowy 15",
+    "TEST - odpowiedź"
+  ].includes(task.name)
+) {
+  answerBox.classList.remove("hidden");
+  answerLabel.innerHTML = "<strong>💬 Wpiszcie odpowiedź:</strong>";
+  answerField.placeholder = "Wpiszcie odpowiedź...";
+  answerField.required = true;
 } else {
   answerBox.classList.add("hidden");
+  answerField.required = false;
 }
+
 }
   });
 }
