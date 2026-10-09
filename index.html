@@ -841,7 +841,10 @@ async function loadRanking() {
     return;
   }
 
-  data.forEach((patrol, index) => {
+data
+  .slice()
+  .sort((a, b) => Number(b.points || 0) - Number(a.points || 0))
+  .forEach((patrol, index) => {
     const myPatrol = data.find(
   patrol => patrol.patrol_name === getCurrentPatrolName()
 );
