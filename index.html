@@ -1813,8 +1813,9 @@ async function drawTopic() {
       return;
     }
 
-    description.textContent = question;
-    button.textContent = "✅ Temat wylosowany";
+description.textContent = question;
+button.textContent = "✅ Temat wylosowany";
+button.classList.add("hidden");
   } catch (error) {
     console.error("Błąd losowania tematu:", error);
     alert("Nie udało się wylosować tematu. Sprawdź połączenie i spróbuj ponownie.");
