@@ -98,7 +98,7 @@
     #map {
   width: 100%;
   height: 400px;
-  margin-top: 12;
+  margin-top: px;
   border-radius: 12px;
 }
 
@@ -106,15 +106,6 @@
 #defensePanel:not(.hidden),
 #stationTask:not(.hidden) {
   display: block !important;
-}
-
-    .cheese-marker {
-  background: transparent;
-  border: none;
-  font-size: 28px;
-  line-height: 32px;
-  text-align: center;
-  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.25));
 }
     
   </style>
@@ -678,73 +669,24 @@ if (error) {
 window.stations = stations;
 console.log("Punkty pobrane:", stations);
 
-const { data: completedIds, error: completedError } =
-  await supabaseClient.rpc("get_completed_station_ids", {
-    p_patrol_id: window.patrolId
-  });
+stations.forEach(async station => {
+ if (station.type === "pomidor") {
 
-if (completedError) {
-  console.error("Błąd pobierania zaliczonych punktów:", completedError);
+const position = await getPomidorPosition();
+
+if (!position) {
+  return;
 }
 
-const completedSet = new Set(completedIds || []);
-
-window.stationMarkers = {};
-
-for (const station of stations) {
-  if (station.type === "pomidor") {
-    const position = await getPomidorPosition();
-
-    if (!position) continue;
-
-    station.latitude = position[0];
-    station.longitude = position[1];
-
+station.latitude = position[0];
+station.longitude = position[1];
+    
     const tomatoIcon = L.divIcon({
       className: "",
       html: '<div style="font-size: 32px;">🍅</div>',
       iconSize: [35, 35],
       iconAnchor: [17, 17]
     });
-
-    window.pomidorMarker = L.marker(position, {
-      icon: tomatoIcon
-    })
-      .addTo(map)
-      .bindTooltip(station.name);
-
-    continue;
-  }
-
-  const isCompleted = completedSet.has(station.id);
-
-  const icon = isCompleted
-    ? L.divIcon({
-        className: "cheese-marker",
-        html: "🧀",
-        iconSize: [35, 35],
-        iconAnchor: [17, 17]
-      })
-    : null;
-
-  const marker = isCompleted
-    ? L.marker([station.latitude, station.longitude], { icon })
-    : L.circleMarker(
-        [station.latitude, station.longitude],
-        {
-          radius: 9,
-          color: station.color,
-          fillColor: station.color,
-          fillOpacity: 1
-        }
-      );
-
-  marker.addTo(map).bindTooltip(
-    isCompleted ? "🧀 " + station.name : station.name
-  );
-
-  window.stationMarkers[station.id] = marker;
-}
 
 window.pomidorMarker = L.marker(
   position,
@@ -1949,26 +1891,6 @@ const { data, error } = await supabaseClient.rpc(
     alert("ℹ️ " + result.message);
     return;
   }
-
-  // 🧀 Zmień znacznik na ser po zaliczeniu punktu
-if (
-  window.currentStation.type !== "pomidor" &&
-  window.stationMarkers?.[window.currentStation.id]
-) {
-  const cheeseIcon = L.divIcon({
-    className: "cheese-marker",
-    html: "🧀",
-    iconSize: [35, 35],
-    iconAnchor: [17, 17]
-  });
-
-  const marker = window.stationMarkers[window.currentStation.id];
-
-  marker.setIcon(cheeseIcon);
-  marker.unbindTooltip();
-  marker.bindTooltip("🧀 " + window.currentStation.name);
-}
-  
     let coordinateMessage = "";
 
   if (
