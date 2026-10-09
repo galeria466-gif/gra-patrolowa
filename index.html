@@ -1807,7 +1807,6 @@ const stationsRequiringAnswer = [
   "Nieosobowy 13",
   "Nieosobowy 14",
   "Nieosobowy 15",
-  "TEST - odpowiedź"
 ];
 
 if (
@@ -1878,10 +1877,12 @@ const { data, error } = await supabaseClient.rpc(
       }
     }
   }
-  document.getElementById("stationTask").classList.add("hidden");
-  document.getElementById("stationAnswer").value = "";
+document.getElementById("stationTask").classList.add("hidden");
+document.getElementById("stationAnswer").value = "";
+document.getElementById("stationTaskTitle").textContent = "";
+document.getElementById("stationTaskDescription").textContent = "";
 
-  window.activeStationId = null;
+window.activeStationId = null;
   if (!window.completedStationIds) {
   window.completedStationIds = new Set();
 }
