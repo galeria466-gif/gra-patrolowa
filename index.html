@@ -133,20 +133,21 @@
 
 <div class="box hidden" id="gameScreen" style="position: relative;">
 
-  <div
+ ```html
+<div
   id="gameRules"
   style="
-position: fixed;
-right: 10px;
-top: 20px;
-width: 260px;
-max-width: calc(100vw - 20px);
+    position: fixed;
+    right: 10px;
+    top: 20px;
+    width: 260px;
+    max-width: calc(100vw - 20px);
     background: white;
     border: 3px solid #222;
     border-radius: 14px;
     padding: 16px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-z-index: 2000;
+    z-index: 2000;
     font-size: 14px;
     line-height: 1.45;
     box-sizing: border-box;
@@ -156,42 +157,55 @@ z-index: 2000;
 
   <p>
     <strong>🎯 Cel gry</strong><br>
-    Zdobywajcie jak najwięcej punktów.
+    Zdobywajcie punkty, odkrywajcie hasło końcowe i przechytrzcie inne patrole!
   </p>
 
   <p>
     <strong>📍 Jak zaliczać punkty?</strong><br>
-    Podejdźcie do punktu na mapie.<br>
-    Gdy znajdziecie się wystarczająco blisko, pojawi się zadanie.<br>
-    Każdy punkt można zaliczyć tylko raz.
+    Podejdźcie do punktu na mapie i wykonajcie wyświetlone zadanie.
+    Jeśli wymagane jest hasło lub odpowiedź, wpiszcie je i kliknijcie
+    „Zapisz i wyślij odpowiedź”. Punkt zalicza się dopiero po potwierdzeniu
+    w aplikacji. Każdy punkt można zaliczyć tylko raz przez patrol.
+  </p>
+
+  <p>
+    <strong>🔐 Hasło końcowe</strong><br>
+    Za zaliczanie punktów osobowych i nieosobowych możecie zdobywać
+    cyfry hasła. Zbierajcie je i odkryjcie całe hasło, aby dotrzeć do celu!
   </p>
 
   <p>
     <strong>⚫ Punkt nieosobowy</strong><br>
-    +5 pkt
+    +5 pkt<br>
+    Wykonajcie zadanie i wpiszcie odpowiedź, jeśli jest wymagana.
   </p>
 
   <p>
     <strong>🟠 Punkt osobowy</strong><br>
-    +10 pkt
+    +10 pkt<br>
+    Znajdźcie punktowego i wykonajcie przygotowane przez niego zadanie.
+    Po jego wykonaniu punktowy wpisze Wam hasło do aplikacji.
   </p>
 
   <p>
-    <strong>🔵 Poznajmy się (:</strong><br>
-    +1 pkt
+    <strong>🔵 Poznajmy się</strong><br>
+    +1 pkt<br>
+    Wylosujcie temat, porozmawiajcie i wpiszcie krótką odpowiedź.
   </p>
 
   <p>
     <strong>🍅 POMIDOR</strong><br>
-    +? pkt<br>
-    Pomidor zmienia miejsce co 10 minut.<br>
-    Błędną odpowiedź można poprawić po ponownym złapaniu pomidora w nowej lokalizacji.
+    ??? pkt<br>
+    Zmienia lokalizację co 10 minut. Podejdźcie na odległość 20 metrów
+    lub mniej i wykonajcie zadanie. Przy błędnej odpowiedzi spróbujcie
+    ponownie po odnalezieniu Pomidora w nowej lokalizacji.
   </p>
 
   <p style="margin-bottom: 0;">
-    <strong>Powodzenia!</strong>
+    <strong>Powodzenia! 🐀</strong>
   </p>
-    <div
+
+  <div
     style="
       margin-top: 18px;
       padding-top: 15px;
@@ -199,48 +213,44 @@ z-index: 2000;
     "
   >
     <h3 style="margin-top: 0;">🪤 PUŁAPKA NA MYSZY</h3>
-      
-      <p>
-  <strong>🪙 Jak kogoś okraść?</strong><br>
-  Podejdźcie do innego patrolu na odległość <strong>20 metrów</strong> lub mniej.
-  Wtedy pojawi się przycisk <strong>„OKRADNIJ”</strong>.<br>
-  Wybierzcie, ile punktów chcecie ukraść — od <strong>1 do 10 pkt</strong> —
-  i rozpocznijcie napad.
-</p>
 
-<p>
-  <strong>⏱️ Kolejny napad</strong><br>
-  Po rozpoczęciu napadu obowiązuje <strong>5 minut przerwy</strong>,
-  zanim będziecie mogli zaatakować kolejny patrol.
-</p>
+    <p>
+      <strong>🪙 Jak kogoś okraść?</strong><br>
+      Podejdźcie do innego patrolu na odległość
+      <strong>20 metrów</strong> lub mniej. Gdy pojawi się przycisk
+      <strong>„OKRADNIJ”</strong>, wybierzcie liczbę punktów do kradzieży
+      — od <strong>1 do 10 pkt</strong> — i rozpocznijcie napad.
+    </p>
+
+    <p>
+      <strong>⏱️ Kolejny napad</strong><br>
+      Po rozpoczęciu napadu obowiązuje <strong>5 minut przerwy</strong>,
+      zanim będziecie mogli zaatakować kolejny patrol.
+    </p>
 
     <p>
       <strong>🚨 Ktoś Was zaatakował?</strong><br>
-      Gdy inny patrol próbuje Was okraść, pojawi się komunikat z informacją,
-      ile punktów chce zabrać.
+      Otrzymacie komunikat informujący o próbie kradzieży i liczbie
+      punktów, które przeciwnik chce zabrać.
     </p>
 
     <p>
       <strong>⏱️ Macie czas na reakcję</strong><br>
-      Czas jest losowany i wynosi od <strong>1 do 5 minut</strong>.
+      Czas na obronę jest losowany i wynosi od <strong>1 do 5 minut</strong>.
     </p>
 
     <p>
       <strong>🪤 Zdążycie kliknąć „Pułapka na myszy”</strong><br>
-      Atakujący zostaje złapany na gorącym uczynku.<br>
-      Wy zyskujecie tyle punktów, ile próbował ukraść, a atakujący je traci.
-    </p>
-
-    <p>
-      <strong>🐀 Nie zdążycie zareagować</strong><br>
-      Napad kończy się powodzeniem i tracicie tyle punktów,
-      ile patrol próbował ukraść.
+      Napad zostaje udaremniony. Wasz patrol zyskuje tyle punktów,
+      ile przeciwnik próbował ukraść, a atakujący traci taką samą liczbę.
     </p>
 
     <p style="margin-bottom: 0;">
-      <strong>⚠️ Maksymalna kradzież: 10 pkt.</strong>
+      <strong>🐀 Nie zdążycie zareagować</strong><br>
+      Napad kończy się powodzeniem. Tracicie tyle punktów,
+      ile patrol próbował ukraść, a atakujący je zyskuje.
     </p>
-  </div>  
+  </div>
 </div>
     
     <h1>🗺️ Gra rozpoczęta!</h1>
