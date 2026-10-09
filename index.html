@@ -386,9 +386,11 @@ z-index: 2000;
   ></textarea>
 </div>
 
-  <button onclick="completeStation()">
-    Wykonaliśmy zadanie
-  </button>
+
+<button id="completeStationButton" onclick="completeStation()">
+  💾 Zapisz i wyślij odpowiedź
+</button>
+
 </div>
   </div>
 
@@ -1681,15 +1683,31 @@ async function completeStation() {
     }
   }
 
-  const { data, error } = await supabaseClient.rpc(
-    "complete_station",
-    {
-      p_patrol_id: window.patrolId,
-      p_station_id: window.currentStation.id,
-      p_password: password,
-      p_answer: answer
-    }
-  );
+  
+if (
+  window.currentStation.type === "poznajmy_sie" &&
+  !window.currentStationQuestion
+) {
+  alert("Najpierw wylosujcie pytanie.");
+  return;
+}
+
+  
+
+const { data, error } = await supabaseClient.rpc(
+  "complete_station",
+  {
+    p_patrol_id: window.patrolId,
+    p_station_id: window.currentStation.id,
+    p_password: password,
+    p_answer: answer,
+    p_question:
+      window.currentStation.type === "poznajmy_sie"
+        ? window.currentStationQuestion
+        : null
+  }
+);
+
 
   if (error) {
     console.error("Błąd zaliczania punktu:", error);
@@ -1855,9 +1873,13 @@ async function drawTopic() {
       return;
     }
 
+
+window.currentStationQuestion = question;
+
 description.textContent = question;
 button.textContent = "✅ Temat wylosowany";
 button.classList.add("hidden");
+
   } catch (error) {
     console.error("Błąd losowania tematu:", error);
     alert("Nie udało się wylosować tematu. Sprawdź połączenie i spróbuj ponownie.");
