@@ -483,6 +483,22 @@ function showGameNotification(message, type = "info") {
    
    window.patrolId = patrol.patrol_id;
 
+   
+const { data: completedRows, error: completedError } =
+  await supabaseClient
+    .from("completions")
+    .select("station_id")
+    .eq("patrol_id", window.patrolId);
+
+if (completedError) {
+  console.error("Błąd pobierania zaliczonych punktów:", completedError);
+}
+
+window.completedStationIds = new Set(
+  (completedRows || []).map(row => row.station_id)
+);
+
+
 document.getElementById("startScreen").classList.add("hidden");
 document.getElementById("gameScreen").classList.remove("hidden");
 
@@ -544,6 +560,22 @@ updateOtherPatrols();
     const patrol = data[0];
 
     window.patrolId = patrol.patrol_id;
+
+    
+const { data: completedRows, error: completedError } =
+  await supabaseClient
+    .from("completions")
+    .select("station_id")
+    .eq("patrol_id", window.patrolId);
+
+if (completedError) {
+  console.error("Błąd pobierania zaliczonych punktów:", completedError);
+}
+
+window.completedStationIds = new Set(
+  (completedRows || []).map(row => row.station_id)
+);
+
 
     document.getElementById("startScreen").classList.add("hidden");
     document.getElementById("gameScreen").classList.remove("hidden");
@@ -1291,6 +1323,11 @@ const position = await getPomidorPosition();
     );
 
 if (distance <= station.activation_radius) {
+
+if (window.completedStationIds?.has(station.id)) {
+  return;
+}
+  
   if (window.activeStationId === station.id) {
   return;
 }
@@ -1700,6 +1737,11 @@ async function completeStation() {
   document.getElementById("stationAnswer").value = "";
 
   window.activeStationId = null;
+  if (!window.completedStationIds) {
+  window.completedStationIds = new Set();
+}
+
+window.completedStationIds.add(window.currentStation.id);
   window.currentStation = null;
 
 showGameNotification(
