@@ -133,15 +133,40 @@
 
 <div class="box hidden" id="gameScreen" style="position: relative;">
 
- ```html
+<!-- Przycisk widoczny, gdy zasady są zwinięte -->
+<button
+  id="gameRulesToggle"
+  onclick="toggleGameRules()"
+  style="
+    position: fixed;
+    right: 10px;
+    top: 20px;
+    z-index: 2001;
+    background: white;
+    border: 2px solid #222;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  "
+>
+  📖 ZASADY
+</button>
+
+<!-- Rozwijany panel z zasadami -->
 <div
   id="gameRules"
   style="
+    display: none;
     position: fixed;
     right: 10px;
     top: 20px;
     width: 260px;
     max-width: calc(100vw - 20px);
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
     background: white;
     border: 3px solid #222;
     border-radius: 14px;
@@ -153,7 +178,22 @@
     box-sizing: border-box;
   "
 >
-  <h3 style="margin-top: 0;">🐀 ZASADY GRY</h3>
+  <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+    <h3 style="margin: 0;">🐀 ZASADY GRY</h3>
+    <button
+      onclick="toggleGameRules()"
+      style="
+        background: #eee;
+        border: 1px solid #aaa;
+        border-radius: 8px;
+        padding: 6px 9px;
+        cursor: pointer;
+        white-space: nowrap;
+      "
+    >
+      ✖ Zwiń
+    </button>
+  </div>
 
   <p>
     <strong>🎯 Cel gry</strong><br>
@@ -164,8 +204,7 @@
     <strong>📍 Jak zaliczać punkty?</strong><br>
     Podejdźcie do punktu na mapie i wykonajcie wyświetlone zadanie.
     Jeśli wymagane jest hasło lub odpowiedź, wpiszcie je i kliknijcie
-    „Zapisz i wyślij odpowiedź”. Punkt zalicza się dopiero po potwierdzeniu
-    w aplikacji. Każdy punkt można zaliczyć tylko raz przez patrol.
+    „Zapisz i wyślij odpowiedź”. Każdy punkt można zaliczyć tylko raz przez patrol.
   </p>
 
   <p>
@@ -201,17 +240,9 @@
     ponownie po odnalezieniu Pomidora w nowej lokalizacji.
   </p>
 
-  <p style="margin-bottom: 0;">
-    <strong>Powodzenia! 🐀</strong>
-  </p>
+  <p><strong>Powodzenia! 🐀</strong></p>
 
-  <div
-    style="
-      margin-top: 18px;
-      padding-top: 15px;
-      border-top: 2px solid #ddd;
-    "
-  >
+  <div style="margin-top: 18px; padding-top: 15px; border-top: 2px solid #ddd;">
     <h3 style="margin-top: 0;">🪤 PUŁAPKA NA MYSZY</h3>
 
     <p>
@@ -2027,6 +2058,16 @@ button.classList.add("hidden");
   }
 }
 
+
+function toggleGameRules() {
+  const rules = document.getElementById("gameRules");
+  const button = document.getElementById("gameRulesToggle");
+
+  const isHidden = rules.style.display === "none";
+
+  rules.style.display = isHidden ? "block" : "none";
+  button.style.display = isHidden ? "none" : "block";
+}
     
 </script>
   
