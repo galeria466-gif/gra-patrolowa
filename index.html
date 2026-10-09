@@ -543,10 +543,14 @@ if (error) {
 window.stations = stations;
 console.log("Punkty pobrane:", stations);
 
-stations.forEach(station => {
+stations.forEach(async station => {
  if (station.type === "pomidor") {
 
-const position = getPomidorPosition();
+const position = await getPomidorPosition();
+
+if (!position) {
+  return;
+}
 
 station.latitude = position[0];
 station.longitude = position[1];
@@ -788,32 +792,43 @@ if (myPatrol) {
   [54.4702, 18.4520],
   [54.4712, 18.4495]
 ];
-function getPomidorPosition() {
-  const minLat = 54.458;
-  const maxLat = 54.482;
-  const minLon = 18.480;
-  const maxLon = 18.512;
 
-  const latitude =
-    minLat + Math.random() * (maxLat - minLat);
+async function getPomidorPosition() {
+  const { data, error } = await supabaseClient.rpc(
+    "get_patrol_pomidor",
+    { p_patrol_id: window.patrolId }
+  );
 
-  const longitude =
-    minLon + Math.random() * (maxLon - minLon);
+  if (error || !data || !data.length) {
+    console.error("Błąd pobierania pozycji Pomidora:", error);
+    return null;
+  }
 
-  return [latitude, longitude];
+  return [data[0].latitude, data[0].longitude];
 }
-    function updatePomidorPosition() {
+
+
+async function updatePomidorPosition() {
   if (!window.pomidorMarker || !window.stations) {
     return;
   }
 
-  const position = getPomidorPosition();
+  const position = await getPomidorPosition();
+
+  if (!position) {
+    return;
+  }
 
   window.pomidorMarker.setLatLng(position);
-      
-window.stations.forEach(station => {
+
+  window.stations.forEach(station => {
+    if (station.type === "pomidor") {
+      station.latitude = position[0];
+      station.longitude = position[1];
+    }
   });
 }
+
 
     function checkRobberyRange(patrols) {
   if (
@@ -1197,9 +1212,9 @@ window.patrolLongitude = longitude;
 );
     
       if (window.stations) {
-        window.stations.forEach(station => {
+stations.forEach(async station => {
   if (station.type === "pomidor") {
-    const position = getPomidorPosition();
+const position = await getPomidorPosition();
 
     station.latitude = position[0];
     station.longitude = position[1];
