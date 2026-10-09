@@ -487,10 +487,9 @@ function showGameNotification(message, type = "info") {
 
    
 const { data: completedRows, error: completedError } =
-  await supabaseClient
-    .from("completions")
-    .select("station_id")
-    .eq("patrol_id", window.patrolId);
+  await supabaseClient.rpc("get_completed_station_ids", {
+    p_patrol_id: window.patrolId
+  });
 
 if (completedError) {
   console.error("Błąd pobierania zaliczonych punktów:", completedError);
@@ -567,10 +566,9 @@ updateOtherPatrols();
 
     
 const { data: completedRows, error: completedError } =
-  await supabaseClient
-    .from("completions")
-    .select("station_id")
-    .eq("patrol_id", window.patrolId);
+  await supabaseClient.rpc("get_completed_station_ids", {
+    p_patrol_id: window.patrolId
+  });
 
 if (completedError) {
   console.error("Błąd pobierania zaliczonych punktów:", completedError);
