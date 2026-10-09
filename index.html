@@ -1312,11 +1312,11 @@ window.activeStationId = station.id;
     return;
   }
 
-  const task = data[0];
+const task = data[0];
 
-  console.log("Typ punktu:", task.type);
+console.log("Zadania pobrane z bazy:", data);
 
-  window.currentStation = task;
+window.currentStation = task;
 
   document.getElementById("stationTask").classList.remove("hidden");
 
