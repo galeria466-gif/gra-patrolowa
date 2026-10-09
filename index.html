@@ -351,6 +351,12 @@ z-index: 2000;
 
   <p id="stationTaskDescription"></p>
 
+     
+<button id="drawTopicButton" class="hidden" onclick="drawTopic()">
+  🎲 Wylosuj temat
+</button>
+
+
  <div id="stationAnswerBox" class="hidden">
   <p id="stationAnswerLabel"><strong>💬 Odpowiedź:</strong></p>
 
@@ -1253,9 +1259,30 @@ window.activeStationId = station.id;
 
   const task = data[0];
 
+  console.log("Typ punktu:", task.type);
+
+  window.currentStation = task;
+
+  document.getElementById("stationTask").classList.remove("hidden");
+
+  document.getElementById("stationTaskTitle").textContent =
+    "📍 " + task.name;
+
+  document.getElementById("stationTaskDescription").textContent =
+    task.description;
+
   
+const drawButton = document.getElementById("drawTopicButton");
+
 
 if (task.type === "poznajmy_sie") {
+  drawButton.classList.remove("hidden");
+  drawButton.disabled = false;
+  drawButton.textContent = "🎲 Wylosuj temat";
+
+  document.getElementById("stationTaskDescription").textContent =
+    "Kliknij „Wylosuj temat”, aby poznać pytanie.";
+
   const pytaniaPoznajmySie = [
     "Gdybyście byli warzywem, to jakim i dlaczego akurat tym?",
     "Gdybyście mieli własne święto narodowe, co by się wtedy robiło?",
@@ -1320,35 +1347,28 @@ if (task.type === "poznajmy_sie") {
     "Jaki smak lodów powinien być nielegalny?"
   ];
 
-  const { data: question, error: questionError } =
-    await supabaseClient.rpc("get_patrol_question", {
-      p_patrol_id: window.patrolId,
-      p_questions: pytaniaPoznajmySie
-    });
+  try {
+    const { data: savedQuestion, error: savedError } =
+      await supabaseClient.rpc("get_or_draw_station_question", {
+        p_patrol_id: window.patrolId,
+        p_station_id: task.id,
+        p_questions: pytaniaPoznajmySie
+      });
 
-  if (questionError || !question) {
-    alert("Wykorzystaliście już wszystkie pytania albo nie udało się ich wylosować.");
-    document.getElementById("stationTask").classList.add("hidden");
-    window.activeStationId = null;
-    return;
+    if (!savedError && savedQuestion) {
+      document.getElementById("stationTaskDescription").textContent =
+        savedQuestion;
+      drawButton.textContent = "✅ Temat już wylosowany";
+      drawButton.disabled = true;
+    }
+  } catch (e) {
+    console.error("Błąd pobierania zapisanego tematu:", e);
   }
-
-  task.description = question;
+} else if (drawButton) {
+  drawButton.classList.add("hidden");
 }
 
 
-
-  console.log("Typ punktu:", task.type);
-
-  window.currentStation = task;
-
-  document.getElementById("stationTask").classList.remove("hidden");
-
-  document.getElementById("stationTaskTitle").textContent =
-    "📍 " + task.name;
-
-  document.getElementById("stationTaskDescription").textContent =
-    task.description;
 
 const answerBox = document.getElementById("stationAnswerBox");
 const answerLabel = document.getElementById("stationAnswerLabel");
@@ -1645,6 +1665,117 @@ alert(
 
 loadCoordinatePassword();
 }
+
+    
+async function drawTopic() {
+  const task = window.currentStation;
+
+  if (!task || task.type !== "poznajmy_sie") return;
+
+  const button = document.getElementById("drawTopicButton");
+  const description = document.getElementById("stationTaskDescription");
+
+  if (!window.patrolId) {
+    alert("Nie znaleziono patrolu. Odśwież grę.");
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "Losowanie...";
+
+  const pytaniaPoznajmySie = [
+    "Gdybyście byli warzywem, to jakim i dlaczego akurat tym?",
+    "Gdybyście mieli własne święto narodowe, co by się wtedy robiło?",
+    "Gdybyście musieli zamienić swoje dłonie na coś innego, co byście wybrali?",
+    "Który przedmiot w waszym pokoju najprawdopodobniej skrywa mroczny sekret?",
+    "Gdybyście byli duchem, kogo nawiedzalibyście i w jaki sposób?",
+    "Jaki przedmiot codziennego użytku byłby najbardziej przerażający, gdyby nagle zaczął mówić?",
+    "Wolelibyście czytać ludziom w myślach czy sprawiać, że wszyscy słyszą wasze myśli?",
+    "Wolelibyście cofnąć jedną rzecz z przeszłości czy zobaczyć jeden dzień ze swojej przyszłości?",
+    "Wolelibyście zawsze mówić dokładnie to, co myślicie, czy nigdy nie móc powiedzieć, co naprawdę czujecie?",
+    "Wolelibyście móc zmieniać jedną decyzję dziennie czy zatrzymywać czas na 10 minut dziennie?",
+    "Kto zostałby liderem grupy, a kto po cichu planowałby zamach stanu?",
+    "Kto pierwszy zaprzyjaźniłby się z wrogiem?",
+    "Kto próbowałby negocjować z zombie?",
+    "Kto ukrywałby zapasy jedzenia przed resztą?",
+    "Kto zostałby legendą, a kto memem po apokalipsie?",
+    "Gdybyście musieli zbudować schron z rzeczy z IKEA, co byłoby najważniejszym elementem?",
+    "Gdybyście mieli wybrać jedną osobę z grupy na wyprawę do dżungli, kogo bierzecie?",
+    "Jaka byłaby wasza pierwsza decyzja, gdyby nagle zniknęły wszystkie zasady społeczne?",
+    "Kto z was potrafiłby przekonać obcych, że jest przywódcą Ziemi?",
+    "Co ludzie często źle o was zakładają?",
+    "Co sprawia, że od razu czujecie się swobodnie przy nowej osobie?",
+    "Jaki jest wasz najbardziej charakterystyczny nawyk?",
+    "Jaką swoją cechę najbardziej lubicie?",
+    "Jaką umiejętność chcielibyście przejąć od kogoś z tej grupy?",
+    "Kto najprędzej zostałby przypadkowo influencerem?",
+    "Kto najprawdopodobniej ma tajne konto w internecie?",
+    "Kto najpewniej ma najbardziej chaotyczną historię miłosną?",
+    "Kto przeżyłby najlepiej tydzień bez telefonu?",
+    "Kto mógłby przypadkiem zostać poszukiwany przez międzynarodowe służby?",
+    "Kto z was byłby najlepszym detektywem?",
+    "Kto najpewniej ma najbardziej podejrzaną historię wyszukiwania?",
+    "Czy ananas na pizzy to zbrodnia, czy dzieło sztuki?",
+    "Co jest bardziej żenujące: potknięcie się na ulicy czy pomachanie do kogoś, kto nie machał do ciebie?",
+    "Czy można oceniać człowieka po jego guście muzycznym?",
+    "Co powinno być legalne, choć obecnie nie jest?",
+    "Co jest gorsze: spóźnianie się czy odwoływanie planów w ostatniej chwili?",
+    "Jaki produkt spożywczy jest obrzydliwy w złej konsystencji?",
+    "Gdybyście mieli wymyślić nowy smak chipsów, co by to było?",
+    "Jaki owoc wygląda najlepiej, ale smakuje najgorzej?",
+    "Które jedzenie jest przereklamowane do granic możliwości?",
+    "Gdybyście musieli jeść jeden sos do końca życia, jaki wybieracie?",
+    "Jakie warzywo miałoby największe szanse wygrać wybory?",
+    "Gdybyście musieli zastąpić wodę jednym napojem, co byście wybrali?",
+    "Gdybyście mogli przenieść się do dowolnego fikcyjnego świata, który wybieracie?",
+    "Co byście zrobili, gdybyście odkryli, że wasze życie jest ukrytym reality show?",
+    "Gdybyście mogli zamienić się życiem z kimś z tej grupy na tydzień, kogo wybieracie?",
+    "Jaka jest najbardziej absurdalna rzecz, którą zrobiliście, żeby komuś zaimponować?",
+    "Jaka jest najdziwniejsza rzecz, którą zrobiliście z nudów?",
+    "Jaka jest najbardziej niepotrzebna rzecz, na którą wydaliście pieniądze?",
+    "Jaki jest najdziwniejszy komplement, jaki kiedykolwiek dostaliście?",
+    "Gdybyście mieli opisać tę grupę trzema emoji, jakie by to były?",
+    "Jaki tytuł miałby film o dzisiejszym dniu?",
+    "Jaka piosenka powinna być hymnem naszej grupy?",
+    "Jaki dźwięk wydaje twoja osobowość?",
+    "Jaka byłaby twoja ksywka w więzieniu?",
+    "Jakie słowo powinno zniknąć z języka polskiego?",
+    "Co powinno być sportem olimpijskim, chociaż brzmi absurdalnie?",
+    "Jaką jedną rzecz chciałbyś umieć robić, ale tylko bezużytecznie?",
+    "Gdyby wasze życie miało narratora, czyj głos chcielibyście słyszeć?",
+    "Co byście zrobili, gdybyście obudzili się jutro w ciele swojego sąsiada?",
+    "Jaki smak lodów powinien być nielegalny?"
+  ];
+
+  try {
+    const { data: question, error } = await supabaseClient.rpc(
+      "get_or_draw_station_question",
+      {
+        p_patrol_id: window.patrolId,
+        p_station_id: task.id,
+        p_questions: pytaniaPoznajmySie
+      }
+    );
+
+    if (error) throw error;
+
+    if (!question) {
+      alert("Nie ma już dostępnych pytań dla tego patrolu.");
+      return;
+    }
+
+    description.textContent = question;
+    button.textContent = "✅ Temat wylosowany";
+  } catch (error) {
+    console.error("Błąd losowania tematu:", error);
+    alert("Nie udało się wylosować tematu. Sprawdź połączenie i spróbuj ponownie.");
+    button.textContent = "🎲 Spróbuj ponownie";
+  } finally {
+    button.disabled = false;
+  }
+}
+
+    
 </script>
   
 </body>
