@@ -1316,6 +1316,11 @@ const task = data[0];
 
 console.log("Zadania pobrane z bazy:", data);
 
+if (window.currentStation && window.currentStation.id !== task.id) {
+  console.log("Inne zadanie już aktywne — pomijam:", task.name);
+  return;
+}
+
 window.currentStation = task;
 
   console.log("Aktywne zadanie:", task.name, task.type);
