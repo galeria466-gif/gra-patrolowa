@@ -1268,8 +1268,13 @@ window.activeStationId = station.id;
   document.getElementById("stationTaskTitle").textContent =
     "📍 " + task.name;
 
+if (task.type === "poznajmy_sie") {
+  document.getElementById("stationTaskDescription").textContent =
+    "Kliknij „🎲 Wylosuj temat”, aby poznać pytanie.";
+} else {
   document.getElementById("stationTaskDescription").textContent =
     task.description;
+}
 
   
 const drawButton = document.getElementById("drawTopicButton");
@@ -1347,28 +1352,9 @@ if (task.type === "poznajmy_sie") {
     "Jaki smak lodów powinien być nielegalny?"
   ];
 
-  try {
-    const { data: savedQuestion, error: savedError } =
-      await supabaseClient.rpc("get_or_draw_station_question", {
-        p_patrol_id: window.patrolId,
-        p_station_id: task.id,
-        p_questions: pytaniaPoznajmySie
-      });
-
-    if (!savedError && savedQuestion) {
-      document.getElementById("stationTaskDescription").textContent =
-        savedQuestion;
-      drawButton.textContent = "✅ Temat już wylosowany";
-      drawButton.disabled = true;
-    }
-  } catch (e) {
-    console.error("Błąd pobierania zapisanego tematu:", e);
-  }
 } else if (drawButton) {
   drawButton.classList.add("hidden");
 }
-
-
 
 const answerBox = document.getElementById("stationAnswerBox");
 const answerLabel = document.getElementById("stationAnswerLabel");
