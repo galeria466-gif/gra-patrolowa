@@ -500,6 +500,8 @@ window.completedStationIds = new Set(
   (completedRows || []).map(row => row.station_id)
 );
 
+   console.log("ZALICZONE ID:", [...window.completedStationIds]);
+console.log("BŁĄD POBIERANIA:", completedError);
 
 document.getElementById("startScreen").classList.add("hidden");
 document.getElementById("gameScreen").classList.remove("hidden");
