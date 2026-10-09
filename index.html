@@ -1318,6 +1318,8 @@ console.log("Zadania pobrane z bazy:", data);
 
 window.currentStation = task;
 
+  console.log("Aktywne zadanie:", task.name, task.type);
+  
   document.getElementById("stationTask").classList.remove("hidden");
 
   document.getElementById("stationTaskTitle").textContent =
