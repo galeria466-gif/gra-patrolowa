@@ -1318,7 +1318,21 @@ const position = await getPomidorPosition();
     station.longitude = position[1];
   }
 });
-       
+
+        
+const { data: discoveredRows, error: discoveredError } =
+  await supabaseClient.rpc("get_discovered_station_ids", {
+    p_patrol_id: window.patrolId
+  });
+
+if (discoveredError) {
+  console.error("Błąd pobierania odkrytych punktów:", discoveredError);
+}
+
+window.discoveredStationIds = new Set(
+  (discoveredRows || []).map(row => row.station_id)
+);
+
  window.stations.forEach(async station => {
     const distance = distanceInMeters(
       latitude,
@@ -1327,7 +1341,41 @@ const position = await getPomidorPosition();
       station.longitude
     );
 
-if (distance <= station.activation_radius) {
+
+const discovered = window.discoveredStationIds?.has(station.id);
+
+if (
+  distance <= station.activation_radius ||
+  (station.type === "nieosobowy" && discovered)
+) {
+  if (window.completedStationIds?.has(station.id)) {
+    return;
+  }
+
+  if (window.activeStationId === station.id) {
+    return;
+  }
+
+  if (
+    station.type === "nieosobowy" &&
+    !discovered
+  ) {
+    const { error: discoverError } = await supabaseClient.rpc(
+      "discover_station",
+      {
+        p_patrol_id: window.patrolId,
+        p_station_id: station.id
+      }
+    );
+
+    if (discoverError) {
+      console.error("Błąd zapisywania odkrytego punktu:", discoverError);
+      return;
+    }
+
+    window.discoveredStationIds.add(station.id);
+  }
+
 
 if (window.completedStationIds?.has(station.id)) {
   return;
@@ -1378,6 +1426,34 @@ if (task.type === "poznajmy_sie") {
 } else {
   document.getElementById("stationTaskDescription").textContent =
     task.description;
+
+  
+const answerBox = document.getElementById("stationAnswerBox");
+const answerField = document.getElementById("stationAnswer");
+
+const stationsRequiringAnswer = [
+  "Nieosobowy 04",
+  "Nieosobowy 05",
+  "Nieosobowy 06",
+  "Nieosobowy 08",
+  "Nieosobowy 09",
+  "Nieosobowy 10",
+  "Nieosobowy 11",
+  "Nieosobowy 12",
+  "Nieosobowy 13",
+  "Nieosobowy 14",
+  "Nieosobowy 15"
+];
+
+const requiresAnswer =
+  task.type === "nieosobowy" &&
+  stationsRequiringAnswer.includes(task.name);
+
+answerBox.classList.toggle("hidden", !requiresAnswer);
+answerField.required = requiresAnswer;
+answerField.value = "";
+
+  
 }
 
   
@@ -1696,6 +1772,30 @@ if (
 }
 
   
+const stationsRequiringAnswer = [
+  "Nieosobowy 04",
+  "Nieosobowy 05",
+  "Nieosobowy 06",
+  "Nieosobowy 08",
+  "Nieosobowy 09",
+  "Nieosobowy 10",
+  "Nieosobowy 11",
+  "Nieosobowy 12",
+  "Nieosobowy 13",
+  "Nieosobowy 14",
+  "Nieosobowy 15"
+];
+
+if (
+  window.currentStation.type === "nieosobowy" &&
+  stationsRequiringAnswer.includes(window.currentStation.name) &&
+  !answer.trim()
+) {
+  alert("✍️ Najpierw wpiszcie odpowiedź do zadania.");
+  document.getElementById("stationAnswer").focus();
+  return;
+}
+
 
 const { data, error } = await supabaseClient.rpc(
   "complete_station",
